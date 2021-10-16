@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const crypto = require("crypto");
 const uuidv4 = require("uuid/v4");
-const adminSchema = new mongoose.Schema(
+const ispSchema = new mongoose.Schema(
   {
     firstname: {
       type: String,
@@ -20,6 +20,11 @@ const adminSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    phone: {
+      type: Number,
+      required: true,
+      unique: true,
+    },
     encry_password: {
       type: String,
       required: true,
@@ -29,7 +34,7 @@ const adminSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-adminSchema
+ispSchema
   .virtual("password")
   .set(function (password) {
     this._password = password;
@@ -40,7 +45,7 @@ adminSchema
     return this._password;
   });
 
-adminSchema.methods = {
+ispSchema.methods = {
   autheticate: function (plainpassword) {
     return this.securePassword(plainpassword) === this.encry_password;
   },
@@ -57,4 +62,4 @@ adminSchema.methods = {
   },
 };
 
-module.exports = mongoose.model("Admin", adminSchema);
+module.exports = mongoose.model("Isp", ispSchema);
