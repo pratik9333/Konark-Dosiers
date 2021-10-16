@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { ObjectId } = mongoose.Schema;
 const userSchema = new mongoose.Schema(
   {
     firstName: {
@@ -7,10 +8,23 @@ const userSchema = new mongoose.Schema(
       maxlength: 32,
       trim: true,
     },
+    isp: {
+      type: ObjectId,
+      ref: "Isp",
+    },
     lastName: {
       type: String,
       maxlength: 32,
       trim: true,
+    },
+    activePack: {
+      type: Array,
+      default: [],
+    },
+    phone: {
+      type: String,
+      maxlength: 10,
+      unique: true,
     },
     email: {
       type: String,

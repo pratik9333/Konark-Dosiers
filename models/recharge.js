@@ -8,6 +8,12 @@ const rechargeSchema = new mongoose.Schema(
       maxlength: 32,
       required: true,
     },
+    description: {
+      type: String,
+      trim: true,
+      maxlength: 32,
+      required: true,
+    },
     validity: {
       type: String,
       trim: true,
@@ -25,6 +31,10 @@ const rechargeSchema = new mongoose.Schema(
       trim: true,
       maxlength: 32,
       required: true,
+    },
+    isp: {
+      type: ObjectId,
+      ref: "Isp",
     },
   },
   { timestamps: true }

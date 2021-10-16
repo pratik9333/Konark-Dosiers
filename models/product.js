@@ -31,6 +31,16 @@ const productSchema = new mongoose.Schema(
       data: Buffer,
       contentType: String,
     },
+    rechargePlans: [
+      {
+        type: ObjectId,
+        ref: "Recharge",
+      },
+    ],
+    isp: {
+      type: ObjectId,
+      ref: "Isp",
+    },
   },
   { timestamps: true }
 );
