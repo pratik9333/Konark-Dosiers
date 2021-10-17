@@ -1,19 +1,17 @@
 const mongoose = require("mongoose");
-const { ObjectId } = mongoose.Schema;
+const crypto = require("crypto");
+const uuidv4 = require("uuid/v4");
 const userSchema = new mongoose.Schema(
   {
-    firstName: {
+    firstname: {
       type: String,
       required: true,
       maxlength: 32,
       trim: true,
     },
-    isp: {
-      type: ObjectId,
-      ref: "Isp",
-    },
-    lastName: {
+    lastname: {
       type: String,
+      required: true,
       maxlength: 32,
       trim: true,
     },
@@ -21,8 +19,13 @@ const userSchema = new mongoose.Schema(
       type: Array,
       default: [],
     },
+    orders: {
+      type: Array,
+      default: [],
+    },
     phone: {
       type: String,
+      required: true,
       maxlength: 10,
       unique: true,
     },
@@ -31,6 +34,11 @@ const userSchema = new mongoose.Schema(
       trim: true,
       required: true,
       unique: true,
+    },
+    role: {
+      type: String,
+      maxlength: 10,
+      required: true,
     },
     encryPassword: {
       type: String,
