@@ -7,7 +7,7 @@ const cors = require("cors");
 
 //MyRoutes
 const authRoutes = require("./routes/auth");
-
+const userRoutes = require("./routes/user");
 
 // Middle Wares
 app.use(express.json());
@@ -17,6 +17,7 @@ app.use(cors());
 
 //Routes
 app.use("/api", authRoutes);
+app.use("/api", userRoutes);
 
 // DB Connection
 mongoose
