@@ -32,9 +32,9 @@ const rechargeSchema = new mongoose.Schema(
       maxlength: 32,
       required: true,
     },
-    isp: {
-      type: ObjectId,
-      ref: "Isp",
+    activated: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }
