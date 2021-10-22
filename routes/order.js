@@ -4,7 +4,7 @@ var router = express.Router();
 const {
   getUserById,
   pushOrderInPurchaseList,
-  setActivePack,
+  addToActivePack,
 } = require("../controllers/user");
 const { isSignedIn, isAuthenticated, isAdmin } = require("../controllers/auth");
 const { updateStock } = require("../controllers/product");
@@ -30,5 +30,8 @@ router.post(
   isAuthenticated,
   pushOrderInPurchaseList,
   updateStock,
-  setActivePack
+  createOrder,
+  addToActivePack
 );
+
+module.exports = router;

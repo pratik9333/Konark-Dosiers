@@ -5,7 +5,7 @@ const fs = require("fs");
 
 exports.getProductById = (req, res, next, id) => {
   Product.findById(id)
-    .populate("name")
+    .populate("rechargePlans")
     .exec((err, product) => {
       if (err) {
         return res.status(400).json({
@@ -138,7 +138,7 @@ exports.getAllProducts = (req, res) => {
 
   Product.find()
     .select("-photo")
-    .populate("name")
+    .populate("rechargePlans")
     .sort([[sortBy, "asc"]])
     .limit(limit)
     .exec((err, products) => {
@@ -152,21 +152,13 @@ exports.getAllProducts = (req, res) => {
 };
 
 exports.updateStock = (req, res, next) => {
-  let myOperations = req.body.order.products.map((prod) => {
-    return {
-      updateOne: {
-        filter: { _id: prod._id },
-        update: { $inc: { stock: -prod.count, sold: +prod.count } },
-      },
-    };
-  });
-
-  Product.bulkWrite(myOperations, {}, (err, products) => {
-    if (err) {
-      return res.status(400).json({
-        error: "Bulk Operations Failed!",
-      });
+  const productId = req.body.order.product;
+  Product.findByIdAndUpdate(
+    productId,
+    { $inc: { stock: -1, sold: +1 } },
+    (err, data) => {
+      //console.log(data);
     }
-    next();
-  });
+  );
+  next();
 };

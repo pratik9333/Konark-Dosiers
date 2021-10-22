@@ -71,7 +71,7 @@ exports.pushOrderInPurchaseList = (req, res, next) => {
   );
 };
 
-exports.setActivePack = (req, res, next) => {
+exports.addToActivePack = (req, res, next) => {
   // Store this in DB
   User.findOneAndUpdate(
     { _id: req.profile._id },
@@ -83,6 +83,7 @@ exports.setActivePack = (req, res, next) => {
           error: "Unable to save Recharge Pack list",
         });
       }
+      res.json(purchases);
     }
   );
 };

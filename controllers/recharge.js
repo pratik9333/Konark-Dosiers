@@ -1,4 +1,5 @@
 const Recharge = require("../models/recharge");
+const { validationResult } = require("express-validator");
 
 exports.getRechargeById = (req, res, next, id) => {
   Recharge.findById(id).exec((err, recharge) => {
@@ -35,7 +36,7 @@ exports.createPack = (req, res) => {
   });
 };
 
-exports.activePack = (req, res) => {
+exports.setActivePack = (req, res) => {
   Recharge.findByIdAndUpdate(
     { _id: req.recharge._id },
     { $set: { activated: true } },
@@ -47,6 +48,18 @@ exports.activePack = (req, res) => {
         });
       }
       res.json(recharge);
+    }
+  );
+};
+
+exports.showActivePack = (req, res) => {
+  Recharge.find(
+    {
+      activated: true,
+    },
+    (err, recharges) => {
+      console.log(recharges);
+      res.json(recharges);
     }
   );
 };

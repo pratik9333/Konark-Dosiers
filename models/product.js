@@ -37,10 +37,6 @@ const productSchema = new mongoose.Schema(
         ref: "Recharge",
       },
     ],
-    isp: {
-      type: ObjectId,
-      ref: "Isp",
-    },
   },
   { timestamps: true }
 );

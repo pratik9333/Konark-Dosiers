@@ -53,3 +53,5 @@ router.put(
 
 // listing routes
 router.get("/products", getAllProducts);
+
+module.exports = router;

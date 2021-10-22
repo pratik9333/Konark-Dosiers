@@ -85,7 +85,7 @@ exports.isAuthenticated = (req, res, next) => {
 };
 
 exports.isAdmin = (req, res, next) => {
-  if (req.profile.role === "admin") {
+  if (req.profile.role != "admin") {
     return res.status(403).json({
       error: "You are not admin!",
     });
@@ -94,7 +94,7 @@ exports.isAdmin = (req, res, next) => {
 };
 
 exports.isIsp = (req, res, next) => {
-  if (req.profile.role === "isp") {
+  if (req.profile.role != "isp") {
     return res.status(403).json({
       error: "You are not admin!",
     });

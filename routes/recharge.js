@@ -11,7 +11,8 @@ const {
 } = require("../controllers/auth");
 const {
   createPack,
-  activePack,
+  setActivePack,
+  showActivePack,
   getRechargeById,
 } = require("../controllers/recharge");
 const { getUserById } = require("../controllers/user");
@@ -24,7 +25,7 @@ router.param("rechargeId", getRechargeById);
 
 // Create Pack
 router.post(
-  "/createPack/:userId",
+  "/createpack/:userId",
   [
     check("packname", "packname should be atleast 5 char!").isLength({
       min: 5,
@@ -48,9 +49,16 @@ router.post(
 
 //SetPackToActive
 router.post(
-  "/setActivePack/:userId/:rechargeId",
+  "/setactivepack/:userId/:rechargeId",
   isSignedIn,
   isAuthenticated,
   isIsp,
-  activePack
+  setActivePack
 );
+
+//showActivePacks
+router.get("/showactivepack", showActivePack);
+
+//
+
+module.exports = router;
