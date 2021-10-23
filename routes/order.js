@@ -12,9 +12,9 @@ const { updateStock } = require("../controllers/product");
 const {
   getOrderById,
   createOrder,
-  //   getAllOrders,
-  //   updateStatus,
-  //   getOrderStatus,
+  getAllOrders,
+  updateStatus,
+  getOrderStatus,
 } = require("../controllers/order");
 
 //Params
@@ -34,4 +34,28 @@ router.post(
   addToActivePack
 );
 
+//read
+router.get(
+  "/orders/all/:userId:",
+  isSignedIn,
+  isAuthenticated,
+  isAdmin,
+  getAllOrders
+);
+
+//Status of order
+router.get(
+  "/order/status/:userId",
+  isSignedIn,
+  isAuthenticated,
+  isAdmin,
+  getOrderStatus
+);
+router.put(
+  "/order/:orderId/status/:userId",
+  isSignedIn,
+  isAuthenticated,
+  isAdmin,
+  updateStatus
+);
 module.exports = router;

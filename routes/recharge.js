@@ -14,6 +14,8 @@ const {
   setActivePack,
   showActivePack,
   getRechargeById,
+  showPacks,
+  removePack,
 } = require("../controllers/recharge");
 const { getUserById } = require("../controllers/user");
 
@@ -59,6 +61,16 @@ router.post(
 //showActivePacks
 router.get("/showactivepack", showActivePack);
 
-//
+//showAllPacks
+router.get("/packs/:userId", isSignedIn, isAuthenticated, isIsp, showPacks);
+
+//removePack
+router.get(
+  "/removepack/:userId/:rechargeId",
+  isSignedIn,
+  isAuthenticated,
+  isAdmin,
+  removePack
+);
 
 module.exports = router;

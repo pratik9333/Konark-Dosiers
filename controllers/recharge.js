@@ -63,3 +63,24 @@ exports.showActivePack = (req, res) => {
     }
   );
 };
+
+exports.showPacks = (req, res) => {
+  Recharge.find({}, (err, recharges) => {
+    res.json(recharges);
+  });
+};
+
+exports.removePack = (req, res) => {
+  let recharge = req.recharge;
+  recharge.remove((err, deletedRecharge) => {
+    if (err) {
+      return res.status(400).json({
+        error: "failed to delete product!",
+      });
+    }
+    res.json({
+      message: "Deletion was success",
+      deletedRecharge,
+    });
+  });
+};

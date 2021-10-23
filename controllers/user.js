@@ -21,24 +21,62 @@ exports.getUser = (req, res) => {
   return res.json(req.profile);
 };
 
-exports.updateUser = (req, res) => {
-  User.findByIdAndUpdate(
-    { _id: req.profile._id },
-    { $set: req.body },
-    { new: true, useFindAndModify: false },
-    (err, user) => {
+exports.getAllUsers = (req, res) => {
+  User.find({ role: "user" })
+    .select("firstname lastname email phone activePack")
+    .exec((err, users) => {
       if (err) {
         return res.status(400).json({
-          error: "You are not authorized to update this information",
+          error: "No Users Found",
         });
       }
-      user.salt = undefined;
-      user.encryPassword = undefined;
-      user.createdAt = undefined;
-      user.updatedAt = undefined;
-      res.json(user);
+      res.json(users);
+    });
+};
+
+exports.getAllIsp = (req, res) => {
+  User.find({ role: "isp" })
+    .select("firstname lastname email phone role")
+    .exec((err, users) => {
+      if (err) {
+        return res.status(400).json({
+          error: "No Users Found",
+        });
+      }
+      res.json(users);
+    });
+};
+
+exports.updateUser = (req, res) => {
+  const filter = { email: req.body.email };
+  const update = {
+    lastname: req.body.lastname,
+    firstname: req.body.firstname,
+    phone: req.body.phone,
+  };
+  User.findOneAndUpdate(filter, update, { new: true }, (err, user) => {
+    if (err) {
+      return res.status(400).json({
+        error: "You are not authorized to update this information",
+      });
     }
-  );
+    user.salt = undefined;
+    user.encryPassword = undefined;
+    user.createdAt = undefined;
+    user.updatedAt = undefined;
+    res.json(user);
+  });
+};
+
+exports.deleteUser = (req, res) => {
+  User.findByIdAndDelete(req.body._id).exec((err, deletedUser) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Not Deleted",
+      });
+    }
+    res.json(deletedUser);
+  });
 };
 
 exports.userPurchaseList = (req, res) => {
