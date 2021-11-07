@@ -1,7 +1,8 @@
 import React from "react";
+import { isAuthenticated } from "../api/Auth";
 
 import Template from "../Components/Template";
-
+const { user } = isAuthenticated();
 const Address = () => {
   return (
     <>
@@ -10,49 +11,36 @@ const Address = () => {
         <table class="table">
           <thead>
             <tr>
-              <th>Company</th>
-              <th>Name</th>
-              <th>Address</th>
-              <th>Country</th>
+              <th>FirstName</th>
+              <th>LastName</th>
+              <th>Email</th>
               <th class="col-md-2 col-sm-3">Phone</th>
-              <th></th>
+              <th>role</th>
+              <th>Country</th>
+              <th>Active Pack</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Unknown</td>
-              <td>Unknown</td>
-              <td>Unknown</td>
-              <td>Unknown</td>
-              <td>Unknown</td>
-              <td>
-                <div class="btn-group" role="group">
-                  <button type="button" class="btn btn-default">
-                    <i class="tf-pencil2" aria-hidden="true"></i>
-                  </button>
-                  <button type="button" class="btn btn-default">
-                    <i class="tf-ion-close" aria-hidden="true"></i>
-                  </button>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>Unknown</td>
-              <td>Unknown</td>
-              <td>Unknown</td>
-              <td>Unknown</td>
-              <td>Unknown</td>
-              <td>
-                <div class="btn-group" role="group">
-                  <button type="button" class="btn btn-default">
-                    <i class="tf-pencil2" aria-hidden="true"></i>
-                  </button>
-                  <button type="button" class="btn btn-default">
-                    <i class="tf-ion-close" aria-hidden="true"></i>
-                  </button>
-                </div>
-              </td>
-            </tr>
+            {
+              <tr>
+                <td>{user.firstname}</td>
+                <td>{user.lastname}</td>
+                <td>{user.email}</td>
+                <td>{user.phone}</td>
+                <td>{user.role}</td>
+                <td>India</td>
+                <td>
+                  {user.activePack == "" ? "No Active Packs" : user.activePack}
+                </td>
+                <td>
+                  <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-default">
+                      <i class="tf-pencil2" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
           </tbody>
         </table>
       </div>

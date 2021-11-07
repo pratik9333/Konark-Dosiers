@@ -11,16 +11,18 @@
     "react-alice-carousel": "^2.5.1",
     "react-dom": "^17.0.2",
     "react-icons": "^4.3.1",
+    "react-loader-spinner": "^4.0.0",
     "react-router-dom": "^5.3.0",
     "react-scripts": "4.0.3",
     "react-slick": "^0.28.1",
+    "react-toastify": "^8.0.3",
     "slick-carousel": "^1.8.1",
     "swiper": "^6.8.4",
     "uuid": "^8.3.2",
     "web-vitals": "^1.1.2"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-scripts --openssl-legacy-provider start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

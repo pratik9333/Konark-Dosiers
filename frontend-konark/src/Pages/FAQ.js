@@ -1,29 +1,11 @@
 import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
+import Breadcumb from "../Components/Breadcumb";
 
 const Faq = () => {
   return (
     <Fragment>
-      <section class="page-header">
-        <div class="container">
-          <div class="row">
-            <div class="col-md-12">
-              <div class="content">
-                <h1 class="page-name">Frequently Asked Questions</h1>
-                <ol class="breadcrumb">
-                  <li>
-                    <Link to="/">Home</Link>
-                  </li>
-                  <li>
-                    <Link to="/FAQ">F.A.Q</Link>
-                  </li>
-                </ol>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
+      <Breadcumb to="FAQ" what="FAQ" />
       <section class="page-wrapper">
         <div class="container">
           <div class="row">

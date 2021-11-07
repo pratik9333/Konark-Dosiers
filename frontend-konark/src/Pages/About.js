@@ -1,26 +1,10 @@
 import React, { Fragment } from "react";
+import Breadcumb from "../Components/Breadcumb";
 
 const About = () => {
   return (
     <Fragment>
-      <section className="page-header">
-        <div className="container">
-          <div className="row">
-            <div className="col-md-12">
-              <div className="content">
-                <h1 className="page-name">About Us</h1>
-                <ol className="breadcrumb">
-                  <li>
-                    <a href="index.html">Home</a>
-                  </li>
-                  <li className="active">about us</li>
-                </ol>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
+      <Breadcumb to="About Us" what="About Us" />
       <section className="about section">
         <div className="container">
           <div className="row">

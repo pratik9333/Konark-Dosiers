@@ -1,26 +1,11 @@
 import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
+import Breadcumb from "./Breadcumb";
 
 const Template = (props) => {
   return (
     <Fragment>
-      <section className="page-header">
-        <div className="container">
-          <div className="row">
-            <div className="col-md-12">
-              <div className="content">
-                <h1 className="page-name">Dashboard</h1>
-                <ol className="breadcrumb">
-                  <li>
-                    <Link to="/">Home</Link>
-                  </li>
-                  <li className="active">My Account</li>
-                </ol>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <Breadcumb to="My Account" what="Dashboard" />
       <section class="user-dashboard page-wrapper">
         <div class="container">
           <div class="row">

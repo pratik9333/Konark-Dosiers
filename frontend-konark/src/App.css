@@ -1,3 +1,25 @@
+::-webkit-scrollbar {
+  width: 12px;
+  height: 30px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgba(102, 105, 94, 0.925);
+  border-radius: 6px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: lightgrey;
+}
+
 .hero-area {
   display: flex;
   justify-content: center;
@@ -520,7 +542,7 @@ input[type="tel"]:focus {
 }
 
 .section {
-  padding: 80px 0;
+  padding: 40px 0;
 }
 
 .title {

@@ -1,10 +1,56 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { isAuthenticated, signout } from "../api/Auth";
+import { getPacks } from "../api/Recharge";
+
 //Images
 import logo from "../Images/logo.png";
 import headerimg from "../Images/shop/header-img.jpg";
+import Home from "../Pages/Home";
 
 export const Header = () => {
+  const [Packs, setPacks] = useState([]);
+  const [Error, setError] = useState();
+
+  const loadPacks = () => {
+    //Getting Packs
+    getPacks().then((data) => {
+      if (data.error) {
+        setError(data.error);
+      } else {
+        setPacks(data);
+        savePackstoLocalStorage(data);
+      }
+    });
+  };
+
+  const savePackstoLocalStorage = (packs) => {
+    if (!localStorage.getItem("packs")) {
+      localStorage.setItem("packs", JSON.stringify(packs));
+    } else {
+      const oldPacks = JSON.parse(localStorage.getItem("packs"));
+      const differentPacks = packs.filter((pack) => {
+        return !oldPacks.some((packTwo) => {
+          return (
+            pack.name == packTwo.name &&
+            pack.description == packTwo.description &&
+            pack.packprice == packTwo.packprice &&
+            pack.validity == packTwo.validity &&
+            pack.option == packTwo.option
+          );
+        });
+      });
+      if (differentPacks.length > 0) {
+        localStorage.removeItem("packs");
+        localStorage.setItem("packs", JSON.stringify(packs));
+      }
+    }
+  };
+
+  useEffect(() => {
+    loadPacks();
+  }, []);
+
   return (
     <Fragment>
       <section className="top-header">
@@ -19,7 +65,7 @@ export const Header = () => {
             <div className="col-md-4 col-xs-12 col-sm-4">
               <div className="logo text-center">
                 <a>
-                  <img src={logo} alt="" />
+                  <img src={logo} style={{ marginTop: "30px" }} alt="" />
                 </a>
               </div>
             </div>
@@ -69,11 +115,13 @@ export const Header = () => {
                   </Link>
                 </li>
 
-                <li className="dropdown ">
-                  <Link to="/" className="text-bold">
-                    Login
-                  </Link>
-                </li>
+                {!isAuthenticated() && (
+                  <li className="dropdown ">
+                    <Link to="/login" className="text-bold">
+                      Login
+                    </Link>
+                  </li>
+                )}
 
                 <li className="dropdown full-width dropdown-slide">
                   <a
@@ -135,7 +183,7 @@ export const Header = () => {
                             <Link to="/">Recharge Plan</Link>
                           </li>
                           <li>
-                            <Link to="/">Buy New COnnection</Link>
+                            <Link to="/newconnection">Buy New Connection</Link>
                           </li>
                         </ul>
                       </div>
@@ -163,33 +211,57 @@ export const Header = () => {
                     aria-haspopup="true"
                     aria-expanded="false"
                   >
-                    Packs & Channels{" "}
-                    <span className="tf-ion-ios-arrow-down"></span>
+                    View Packs
+                    <span
+                      className="tf-ion-ios-arrow-down"
+                      style={{ marginLeft: "4px" }}
+                    ></span>
+                  </a>
+                  <ul className="dropdown-menu">
+                    {Packs.map((pack) => (
+                      <li>
+                        <Link to={{ pathname: "/packs", state: Packs }}>
+                          {pack.packname}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+                <li className="dropdown dropdown-slide">
+                  <a
+                    className="dropdown-toggle"
+                    data-toggle="dropdown"
+                    data-hover="dropdown"
+                    data-delay="350"
+                    role="button"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    Help
+                    <span
+                      className="tf-ion-ios-arrow-down"
+                      style={{ marginLeft: "4px" }}
+                    ></span>
                   </a>
                   <ul className="dropdown-menu">
                     <li>
-                      <a href="#">Single Channels</a>
-                    </li>
-                    <li>
-                      <a href="#">Konark Combos</a>
-                    </li>
-                    <li>
-                      <a href="#">Konark Add-ons</a>
-                    </li>
-                    <li>
-                      <a href="#">Broadcaster Bouquets</a>
-                    </li>
-                    <li>
-                      <a href="#">Free-To-Air (FTA) packs</a>
-                    </li>
-                    <li>
-                      <a href="#">Make your own pack</a>
+                      <Link to="/contact">Contact US</Link>
                     </li>
                   </ul>
                 </li>
-                <li className="dropdown ">
-                  <Link to="/">Signout</Link>
-                </li>
+                {isAuthenticated() && (
+                  <li
+                    className="dropdown text-danger"
+                    style={{ color: "red" }}
+                    onClick={() => {
+                      signout();
+                    }}
+                  >
+                    <Link style={{ color: "red" }} to="/login">
+                      Signout
+                    </Link>
+                  </li>
+                )}
               </ul>
             </div>
           </div>

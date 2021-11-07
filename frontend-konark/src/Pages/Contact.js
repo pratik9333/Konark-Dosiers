@@ -1,25 +1,10 @@
 import React, { Fragment } from "react";
+import Breadcumb from "../Components/Breadcumb";
 
 const Contact = () => {
   return (
     <Fragment>
-      <section className="page-header">
-        <div className="container">
-          <div className="row">
-            <div className="col-md-12">
-              <div className="content">
-                <h1 className="page-name">Contact Us</h1>
-                <ol className="breadcrumb">
-                  <li>
-                    <a>Home</a>
-                  </li>
-                  <li className="active">contact</li>
-                </ol>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <Breadcumb to="ContactUs" what="Contact Us" />
 
       <section className="page-wrapper">
         <div className="contact-section">
