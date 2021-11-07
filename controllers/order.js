@@ -30,6 +30,7 @@ exports.createOrder = (req, res, next) => {
 };
 
 exports.getAllOrders = (req, res) => {
+  console.log(12);
   Order.find()
     .populate("user", "_id firstname ")
     .exec((err, order) => {

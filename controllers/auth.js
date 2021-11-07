@@ -53,8 +53,31 @@ exports.signin = (req, res) => {
     res.cookie("token", token, { expire: new Date() + 9999 });
 
     //SEND RESPONSE TO FRONTEND
-    const { _id, name, email, role } = user;
-    return res.json({ token, user: { _id, name, email, role } });
+    const {
+      _id,
+      name,
+      email,
+      role,
+      firstname,
+      lastname,
+      phone,
+      orders,
+      activePack,
+    } = user;
+    return res.json({
+      token,
+      user: {
+        _id,
+        name,
+        email,
+        role,
+        firstname,
+        lastname,
+        phone,
+        orders,
+        activePack,
+      },
+    });
   });
 };
 

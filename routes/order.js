@@ -7,7 +7,7 @@ const {
   addToActivePack,
 } = require("../controllers/user");
 const { isSignedIn, isAuthenticated, isAdmin } = require("../controllers/auth");
-const { updateStock } = require("../controllers/product");
+const { updateStock, getProductById } = require("../controllers/product");
 
 const {
   getOrderById,
@@ -20,12 +20,13 @@ const {
 //Params
 router.param("userId", getUserById);
 router.param("orderId", getOrderById);
+router.param("productId", getProductById);
 
 //Actualroutes
 
 //create
 router.post(
-  "/order/create/:userId",
+  "/order/:productId/create/:userId",
   isSignedIn,
   isAuthenticated,
   pushOrderInPurchaseList,
@@ -35,13 +36,7 @@ router.post(
 );
 
 //read
-router.get(
-  "/orders/all/:userId:",
-  isSignedIn,
-  isAuthenticated,
-  isAdmin,
-  getAllOrders
-);
+router.get("/orders/all/:userId", isSignedIn, isAuthenticated, getAllOrders);
 
 //Status of order
 router.get(

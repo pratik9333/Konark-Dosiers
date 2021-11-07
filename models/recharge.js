@@ -11,7 +11,6 @@ const rechargeSchema = new mongoose.Schema(
     description: {
       type: String,
       trim: true,
-      maxlength: 32,
       required: true,
     },
     validity: {

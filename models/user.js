@@ -37,7 +37,7 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      maxlength: 10,
+      enum: ["user", "isp", "admin"],
       required: true,
     },
     encryPassword: {
