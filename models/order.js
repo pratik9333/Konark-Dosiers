@@ -9,7 +9,12 @@ const OrderSchema = new mongoose.Schema(
     },
     transaction_id: {},
     amount: { type: Number },
-    address: String,
+    address: {
+      fulladdress: String,
+      zipcode: Number,
+      city: String,
+      Country: String,
+    },
     status: {
       type: String,
       default: "Received",

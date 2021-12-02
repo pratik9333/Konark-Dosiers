@@ -94,9 +94,20 @@ exports.userPurchaseList = (req, res) => {
 
 exports.pushOrderInPurchaseList = (req, res, next) => {
   // Store this in DB
+  console.log(req.body);
+  const order_obj = {
+    address: {
+      fulladdress: req.body.address.fulladdress,
+      zipcode: req.body.address.zipcode,
+      city: req.body.address.city,
+      Country: req.body.address.Country,
+    },
+    amount: req.body.amount,
+    product: req.body.product,
+  };
   User.findOneAndUpdate(
     { _id: req.profile._id },
-    { $push: { orders: req.body.order } },
+    { $push: { orders: order_obj } },
     { new: true },
     (err, purchases) => {
       if (err) {
@@ -113,7 +124,7 @@ exports.addToActivePack = (req, res, next) => {
   // Store this in DB
   User.findOneAndUpdate(
     { _id: req.profile._id },
-    { $push: { activePack: req.body.activePack } },
+    { $push: { recharge: req.body.recharge } },
     { new: true },
     (err, purchases) => {
       if (err) {

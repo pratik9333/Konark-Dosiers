@@ -5,12 +5,12 @@ const app = express();
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
-//MyRoutes
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
 const rechargeRoutes = require("./routes/recharge");
 const orderRoutes = require("./routes/order");
 const productRoutes = require("./routes/product");
+const paymentBRoutes = require("./routes/paymentBRoutes");
 
 // Middle Wares
 app.use(express.json());
@@ -24,6 +24,7 @@ app.use("/api", userRoutes);
 app.use("/api", rechargeRoutes);
 app.use("/api", orderRoutes);
 app.use("/api", productRoutes);
+app.use("/api", paymentBRoutes);
 
 // DB Connection
 mongoose

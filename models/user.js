@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const crypto = require("crypto");
 const uuidv4 = require("uuid/v4");
+const { ObjectId } = mongoose.Schema;
 const userSchema = new mongoose.Schema(
   {
     firstname: {
@@ -15,9 +16,9 @@ const userSchema = new mongoose.Schema(
       maxlength: 32,
       trim: true,
     },
-    activePack: {
-      type: Array,
-      default: [],
+    recharge: {
+      type: ObjectId,
+      ref: "recharge",
     },
     orders: {
       type: Array,

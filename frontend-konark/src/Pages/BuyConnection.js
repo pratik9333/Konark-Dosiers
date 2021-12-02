@@ -1,12 +1,15 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState, useContext } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
+import { AppContext } from "../Context/AppContext";
+
 import Imagehelper from "../api/ImageHelper";
 import Breadcumb from "../Components/Breadcumb";
 
 const BuyConnection = () => {
-  const [products, setProducts] = useState([]);
-  const [packs, setPacks] = useState([]);
+  const { packs, products } = useContext(AppContext);
+  const [Products, setProducts] = useState([]);
+  const [Packs, setPacks] = useState([]);
   const [order, setOrder] = useState({
     rechargeName: "",
     productName: "",
@@ -16,10 +19,10 @@ const BuyConnection = () => {
   const { redirect, rechargeName } = order;
 
   //Returns array with SD Channels
-  let sdChannels = packs.filter((pack) => !pack.packname.includes("HD"));
+  let sdChannels = Packs.filter((pack) => !pack.packname.includes("HD"));
 
   //Returns Array with HD Channels
-  let hdChannels = packs.filter((pack) => !pack.packname.includes("SD"));
+  let hdChannels = Packs.filter((pack) => !pack.packname.includes("SD"));
 
   const handleProduct = (product) => {
     if (rechargeName == "") {
@@ -44,9 +47,10 @@ const BuyConnection = () => {
   };
 
   useEffect(() => {
-    setProducts(JSON.parse(localStorage.getItem("products")));
-    setPacks(JSON.parse(localStorage.getItem("packs")));
+    setProducts(products);
+    setPacks(packs);
   }, []);
+
   return (
     <Fragment>
       <ToastContainer />
@@ -59,7 +63,7 @@ const BuyConnection = () => {
       </h1>
       <div className="container">
         <div className="row">
-          {products.map((product) => (
+          {Products.map((product) => (
             <>
               {product.name == "DEN SD" ? (
                 <div className="col-md-6">
@@ -125,7 +129,7 @@ const BuyConnection = () => {
             </>
           ))}
 
-          {products.map((product) => (
+          {Products.map((product) => (
             <>
               {product.name == "DEN HD" ? (
                 <div className="col-md-6">

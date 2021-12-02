@@ -1,54 +1,18 @@
-import React, { Fragment, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { Fragment, useEffect, useContext, useState } from "react";
+import { Link, withRouter } from "react-router-dom";
 import { isAuthenticated, signout } from "../api/Auth";
-import { getPacks } from "../api/Recharge";
+import { AppContext } from "../Context/AppContext";
 
 //Images
 import logo from "../Images/logo.png";
 import headerimg from "../Images/shop/header-img.jpg";
-import Home from "../Pages/Home";
 
-export const Header = () => {
-  const [Packs, setPacks] = useState([]);
-  const [Error, setError] = useState();
-
-  const loadPacks = () => {
-    //Getting Packs
-    getPacks().then((data) => {
-      if (data.error) {
-        setError(data.error);
-      } else {
-        setPacks(data);
-        savePackstoLocalStorage(data);
-      }
-    });
-  };
-
-  const savePackstoLocalStorage = (packs) => {
-    if (!localStorage.getItem("packs")) {
-      localStorage.setItem("packs", JSON.stringify(packs));
-    } else {
-      const oldPacks = JSON.parse(localStorage.getItem("packs"));
-      const differentPacks = packs.filter((pack) => {
-        return !oldPacks.some((packTwo) => {
-          return (
-            pack.name == packTwo.name &&
-            pack.description == packTwo.description &&
-            pack.packprice == packTwo.packprice &&
-            pack.validity == packTwo.validity &&
-            pack.option == packTwo.option
-          );
-        });
-      });
-      if (differentPacks.length > 0) {
-        localStorage.removeItem("packs");
-        localStorage.setItem("packs", JSON.stringify(packs));
-      }
-    }
-  };
+export const Header = ({ history }) => {
+  const { packs } = useContext(AppContext);
+  const [Packs, setPack] = useState([]);
 
   useEffect(() => {
-    loadPacks();
+    setPack(packs);
   }, []);
 
   return (
@@ -270,3 +234,5 @@ export const Header = () => {
     </Fragment>
   );
 };
+
+export default withRouter(Header);

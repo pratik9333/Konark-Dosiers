@@ -1,34 +1,24 @@
-import React, { Fragment, useEffect, useState } from "react";
-import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
-
-import { SliderJs } from "../Components/Slider";
-import Loader from "react-loader-spinner";
-
-import { ToastContainer, toast } from "react-toastify";
+import React, {
+  Fragment,
+  useEffect,
+  useState,
+  useLayoutEffect,
+  useContext,
+} from "react";
+import LoadingBar from "react-top-loading-bar";
 import "react-toastify/dist/ReactToastify.css";
-
-import { getProducts } from "../api/Product";
 import Imagehelper from "../api/ImageHelper";
-import { isAuthenticated } from "../api/Auth";
 
+import { AppContext } from "../Context/AppContext";
+import { SliderJs } from "../Components/Slider";
+import { ToastContainer, toast } from "react-toastify";
+import { isAuthenticated } from "../api/Auth";
 import { Link } from "react-router-dom";
 
 const Home = () => {
-  const [products, setProducts] = useState([]);
-  const [error, setError] = useState(false);
-
-  const loadProducts = () => {
-    //Getting Products
-    getProducts().then((data) => {
-      if (data.error) {
-        setError(data.error);
-        console.log(error);
-      } else {
-        setProducts(data);
-        saveProductLocalStorage(data);
-      }
-    });
-  };
+  const { products } = useContext(AppContext);
+  const [Products, setProducts] = useState([]);
+  const [progress, setProgress] = useState(0);
 
   const showToast = () => {
     if (!isAuthenticated()) {
@@ -38,41 +28,20 @@ const Home = () => {
     }
   };
 
-  const saveProductLocalStorage = (products) => {
-    if (!localStorage.getItem("products")) {
-      localStorage.setItem("products", JSON.stringify(products));
-    } else {
-      const oldProducts = JSON.parse(localStorage.getItem("products"));
-      const differentProducts = products.filter((product) => {
-        return !oldProducts.some((productTwo) => {
-          return (
-            product.name == productTwo.name &&
-            product.description == productTwo.description &&
-            product.price == productTwo.price
-          );
-        });
-      });
-      if (differentProducts.length > 0) {
-        localStorage.removeItem("products");
-        localStorage.setItem("products", JSON.stringify(products));
-      }
-    }
-  };
-
   useEffect(() => {
-    loadProducts();
+    setProducts(products);
   }, []);
+
+  useLayoutEffect(() => {}, []);
 
   return (
     <Fragment>
       <ToastContainer />
       <SliderJs />
-      <Loader
-        type="Puff"
-        color="#00BFFF"
-        height={100}
-        width={100}
-        timeout={3000} //3 secs
+      <LoadingBar
+        color="#f11946"
+        progress={progress}
+        onLoaderFinished={() => setProgress(0)}
       />
       <section className="product-category section">
         <div className="container">
@@ -86,7 +55,7 @@ const Home = () => {
               </div>
             </div>
 
-            {products.map((product) => (
+            {Products.map((product) => (
               <>
                 {product.name == "DEN SD" || product.name == "DEN HD" ? (
                   <div className="col-md-6">
@@ -152,7 +121,7 @@ const Home = () => {
             </div>
           </div>
           <div className="row">
-            {products.map((product) => (
+            {Products.map((product) => (
               <div
                 class=" col-md-6 mb-5 mt-5 card"
                 style={{ marginTop: "28px" }}

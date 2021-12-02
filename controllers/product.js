@@ -152,13 +152,11 @@ exports.getAllProducts = (req, res) => {
 };
 
 exports.updateStock = (req, res, next) => {
-  const productId = req.body.order.product;
+  const productId = req.body.product;
   Product.findByIdAndUpdate(
     productId,
     { $inc: { stock: -1, sold: +1 } },
-    (err, data) => {
-      //console.log(data);
-    }
+    (err, data) => {}
   );
   next();
 };

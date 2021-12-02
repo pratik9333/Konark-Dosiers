@@ -16,9 +16,18 @@ exports.getOrderById = (req, res, next, id) => {
 };
 
 exports.createOrder = (req, res, next) => {
-  req.body.order.user = req.profile;
-  console.warn(req.body.order);
-  const order = new Order(req.body.order);
+  req.body.user = req.profile;
+  const order_obj = {
+    address: {
+      fulladdress: req.body.address.fulladdress,
+      zipcode: req.body.address.zipcode,
+      city: req.body.address.city,
+      Country: req.body.address.Country,
+    },
+    amount: req.body.amount,
+    product: req.body.product,
+  };
+  const order = new Order(order_obj);
   order.save((err, order) => {
     if (err) {
       return res.status(400).json({
