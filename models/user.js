@@ -16,9 +16,18 @@ const userSchema = new mongoose.Schema(
       maxlength: 32,
       trim: true,
     },
-    recharge: {
-      type: ObjectId,
-      ref: "recharge",
+    activePack: {
+      recharge: {
+        type: ObjectId,
+        ref: "recharge",
+      },
+      expiresAt: {
+        type: String,
+      },
+    },
+    newUser: {
+      type: Boolean,
+      default: true,
     },
     orders: {
       type: Array,

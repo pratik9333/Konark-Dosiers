@@ -18,6 +18,7 @@ exports.getProductById = (req, res, next, id) => {
 };
 
 exports.createProduct = (req, res) => {
+  const { rechargeId } = req.body;
   let form = new formidable.IncomingForm();
   form.keepExtensions = true;
   form.parse(req, (err, fields, file) => {
@@ -46,6 +47,10 @@ exports.createProduct = (req, res) => {
       }
       product.photo.data = fs.readFileSync(file.photo.path);
       product.photo.contentType = file.photo.type;
+    }
+
+    if (rechargeId) {
+      product.rechargePlans.push(rechargeId);
     }
 
     // Save to DB

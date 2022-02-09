@@ -1,17 +1,64 @@
-// const Razorpay = require("razorpay");
+const Razorpay = require("razorpay");
+require("dotenv").config();
 
-// var instance = new Razorpay({
-//   key_id: "rzp_test_OQTnNXAp3P2XUy",
-//   key_secret: "5DCuy1qDSFpMq6oC7vuNGMeZ",
-// });
+const crypto = require("crypto");
 
-// exports.razorpay = (req, res) => {
+const razorpay = new Razorpay({
+  key_id: "rzp_test_pUm7R3AkjqGQ2Y",
+  key_secret: "iQxJNKlNGJdJCbrRqkYUwR2d",
+});
 
-// };
+exports.razorpay = async (req, res) => {
+  console.log(req.body.amount);
+  try {
+    const options = {
+      amount: req.body.amount, // amount in smallest currency unit
+      currency: "INR",
+      receipt: "receipt_order_74394",
+    };
 
-// instance.orders.create({
-//   amount: 50000,
-//   currency: "INR",
-//   receipt: "receipt#1",
-//   notes: { key1: "value3", key2: "value2" },
-// });
+    const order = await razorpay.orders.create(options);
+
+    if (!order) return res.status(500).send("Some error occured");
+
+    res.json(order);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
+exports.successrazorpay = (req, res) => {
+  try {
+    // getting the details back from our font-end
+    const {
+      orderCreationId,
+      razorpayPaymentId,
+      razorpayOrderId,
+      razorpaySignature,
+    } = req.body;
+
+    // Creating our own digest
+    // The format should be like this:
+    // digest = hmac_sha256(orderCreationId + "|" + razorpayPaymentId, secret);
+    const shasum = crypto.createHmac("sha256", "iQxJNKlNGJdJCbrRqkYUwR2d");
+
+    shasum.update(`${orderCreationId}|${razorpayPaymentId}`);
+
+    const digest = shasum.digest("hex");
+
+    // comaparing our digest with the actual signature
+    if (digest !== razorpaySignature)
+      return res.status(400).json({ msg: "Transaction not legit!" });
+
+    // THE PAYMENT IS LEGIT & VERIFIED
+    // YOU CAN SAVE THE DETAILS IN YOUR DATABASE IF YOU WANT
+
+    return res.status(200).json({
+      msg: "success",
+      orderId: razorpayOrderId,
+      paymentId: razorpayPaymentId,
+    });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};

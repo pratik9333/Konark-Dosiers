@@ -47,6 +47,7 @@ const BuyConnection = () => {
   };
 
   useEffect(() => {
+    window.scrollTo(1, 1);
     setProducts(products);
     setPacks(packs);
   }, []);

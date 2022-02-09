@@ -11,6 +11,7 @@ import Login from "../Pages/Login";
 import ProductInfo from "../Pages/ProductInfo";
 import Packs from "../Pages/Packs";
 import Order from "../Pages/Order";
+import Confirmation from "../Pages/Confirmation";
 
 //Components
 import { Header } from "../Components/Header";
@@ -38,6 +39,11 @@ export const Routes = () => {
             <PrivateRoutes path="/orders" exact component={Orders} />
             <PrivateRoutes path="/address" exact component={Address} />
             <PrivateRoutes path="/userprofile" exact component={Profile} />
+            <PrivateRoutes
+              path="/confirmation"
+              exact
+              component={Confirmation}
+            />
             <PrivateRoutes
               path="/newconnection"
               exact

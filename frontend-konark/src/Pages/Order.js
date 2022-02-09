@@ -1,25 +1,37 @@
 import React, { useState, useContext, Fragment, useEffect } from "react";
-import { Link } from "react-router-dom";
+import axios from "axios";
+import { Link, useHistory } from "react-router-dom";
 import { isAuthenticated } from "../api/Auth";
 import Imagehelper from "../api/ImageHelper";
-import { createOrder } from "../api/Order";
-import {} from "../api/paymentBhelper";
+import { createOrder, payment } from "../api/Order";
+import API from "../backend";
 import Breadcumb from "../Components/Breadcumb";
 
 import { AppContext } from "../Context/AppContext";
 
 const Order = (props) => {
   const { products, packs } = useContext(AppContext);
+  const { user } = isAuthenticated();
+
+  let filteredPacks;
+  let totalprice;
+
+  let history = useHistory();
 
   let filteredProducts = products.filter(
     (product) => product.name === props.location.state.productName
   );
-  let filteredPacks = packs.filter(
-    (pack) => pack.packname === props.location.state.rechargeName
-  );
+
+  if (props.location.state.rechargeName) {
+    filteredPacks = packs.filter(
+      (pack) => pack.packname === props.location.state.rechargeName
+    );
+    totalprice = filteredProducts[0].price + filteredPacks[0].packprice;
+  }
 
   let imageproductsend = filteredProducts[0];
-  const totalprice = filteredProducts[0].price + filteredPacks[0].packprice;
+
+  totalprice = filteredProducts[0].price;
 
   //Authentication
   const userId = isAuthenticated() && isAuthenticated().user._id;
@@ -45,47 +57,100 @@ const Order = (props) => {
     });
   };
 
-  const submitOrder = (event) => {
-    event.preventDefault();
-    createOrder(userId, token, order).then((data) => {
-      if (data.err) {
-        console.log(data.err);
-      } else {
-        console.log(data);
-        setOrderInfo({
-          ...order,
-          address: {
-            ...order.address,
-            fulladdress: "",
-            zipcode,
-            city: "",
-            zipcode: "",
-            amount: "",
-            product: "",
-            recharge: "",
-          },
-        });
-      }
+  function loadScript(src) {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.src = src;
+      script.onload = () => {
+        resolve(true);
+      };
+      script.onerror = () => {
+        resolve(false);
+      };
+      document.body.appendChild(script);
     });
-  };
+  }
 
-  // const displayRazorpay = () => {
-  //   const options = {
-  //     key: process.env.key_id,
-  //     currency: "inr",
-  //     amount: ,
-  //     order_id: ,
-  //     name: "Konark Dossiers",
-  //     description: "Buy new connection by paying the amount",
-  //     handler: function (response) {
-  //       alert(response.razorpay_payment_id);
-  //       alert(response.razorpay_order_id);
-  //       alert(response.razorpay_signature);
-  //     },
-  //   };
-  //   const paymentObject = new window.Razorpay(options);
-  //   paymentObject.open();
-  // };
+  async function displayRazorpay() {
+    try {
+      const res = await loadScript(
+        "https://checkout.razorpay.com/v1/checkout.js"
+      );
+
+      if (!res) {
+        alert("Razorpay SDK failed to load. Are you online?");
+        return;
+      }
+
+      // creating a new order
+      let pay = await payment(order.amount * 100, userId, token);
+
+      // Getting the order details back
+      const { amount, id: order_id, currency } = pay;
+
+      const options = {
+        key: "rzp_test_pUm7R3AkjqGQ2Y", // Enter the Key ID generated from the Dashboard
+        amount: amount,
+        currency: currency,
+        name: user.firstname,
+        order_id: order_id,
+        handler: async function (response) {
+          const datas = {
+            orderCreationId: order_id,
+            razorpayPaymentId: response.razorpay_payment_id,
+            razorpayOrderId: response.razorpay_order_id,
+            razorpaySignature: response.razorpay_signature,
+          };
+          const res = await axios.post(
+            `${API}/payment/success/${userId}`,
+            datas
+          );
+
+          const createOrder = await axios.post(
+            `${API}/order/create/${userId}`,
+            {
+              address: order.address,
+              amount: order.amount,
+              product: order.product,
+              user: order.user,
+              paymentId: res.data.paymentId,
+              orderId: res.data.orderId,
+              recharge: order.recharge,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          if (createOrder) {
+            history.push("/confirmation");
+          }
+        },
+
+        prefill: {
+          name: "Soumya Dey",
+          email: "SoumyaDey@example.com",
+          contact: "9999999999",
+        },
+        notes: {
+          address: "Soumya Dey Corporate Office",
+        },
+        theme: {
+          color: "#61dafb",
+        },
+      };
+
+      const paymentObject = new window.Razorpay(options);
+      paymentObject.open();
+    } catch (error) {
+      alert("Order Failed");
+    }
+  }
+
+  useEffect(() => {
+    window.scrollTo(1, 1);
+  }, []);
 
   return (
     <Fragment>
@@ -142,7 +207,7 @@ const Order = (props) => {
                       />
                     </div>
                     <button
-                      onClick={submitOrder}
+                      onClick={displayRazorpay}
                       type="button"
                       className="btn btn-dark"
                     >

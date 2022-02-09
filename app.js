@@ -4,7 +4,7 @@ const express = require("express");
 const app = express();
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-
+const moment = require("moment");
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
 const rechargeRoutes = require("./routes/recharge");
@@ -32,12 +32,13 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
+    useFindAndModify: false,
   })
   .then(() => {
     console.log("DB CONNECTED");
   });
 
-const port = process.env.PORT || 8000; // PORT
+const port = process.env.PORT || 4000; // PORT
 
 app.listen(port, () => {
   console.log(`app is runnning at ${port}`);

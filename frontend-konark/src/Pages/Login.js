@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { isAuthenticated, authenticate, signin } from "../api/Auth";
 
@@ -15,7 +15,9 @@ const Login = () => {
   const { email, password, error, didRedirect } = values;
   const { user } = isAuthenticated();
 
-  console.log(values);
+  useEffect(() => {
+    window.scrollTo(1, 1);
+  }, []);
 
   const performRedirect = () => {
     if (didRedirect) {
@@ -40,7 +42,6 @@ const Login = () => {
     setValues({ ...values, error: false, Redirect: false });
     signin({ email, password })
       .then((data) => {
-        console.log(data);
         if (data.error) {
           setValues({ ...values, error: data.error });
         } else {

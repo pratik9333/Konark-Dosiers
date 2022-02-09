@@ -7,7 +7,8 @@ const OrderSchema = new mongoose.Schema(
       type: ObjectId,
       ref: "Product",
     },
-    transaction_id: {},
+    order_id: { type: String },
+    transaction_id: { type: String },
     amount: { type: Number },
     address: {
       fulladdress: String,

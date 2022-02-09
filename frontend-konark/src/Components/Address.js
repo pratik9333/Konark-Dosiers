@@ -1,9 +1,14 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { isAuthenticated } from "../api/Auth";
 
 import Template from "../Components/Template";
 const { user } = isAuthenticated();
 const Address = () => {
+  const [User, setUser] = useState([]);
+
+  useEffect(() => {
+    setUser(user);
+  }, []);
   return (
     <>
       <Template active="address" />
@@ -23,14 +28,14 @@ const Address = () => {
           <tbody>
             {
               <tr>
-                <td>{user.firstname}</td>
-                <td>{user.lastname}</td>
-                <td>{user.email}</td>
-                <td>{user.phone}</td>
-                <td>{user.role}</td>
+                <td>{User ? User.firstname : ""}</td>
+                <td>{user ? User.lastname : ""}</td>
+                <td>{user ? User.email : ""}</td>
+                <td>{user ? User.phone : ""}</td>
+                <td>{user ? User.role : ""}</td>
                 <td>India</td>
                 <td>
-                  {user.activePack == "" ? "No Active Packs" : user.activePack}
+                  {User.activePack == "" ? "No Active Packs" : User.activePack}
                 </td>
                 <td>
                   <div class="btn-group" role="group">

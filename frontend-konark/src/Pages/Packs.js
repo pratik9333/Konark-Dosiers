@@ -6,6 +6,7 @@ const Packs = (props) => {
 
   useEffect(() => {
     setReceivedPacks(props.location.state);
+    window.scrollTo(1, 1);
   }, []);
 
   return (

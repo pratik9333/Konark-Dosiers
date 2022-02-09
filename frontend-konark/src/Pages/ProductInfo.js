@@ -20,6 +20,8 @@ const ProductInfo = (props) => {
 
   useEffect(() => {
     setProduct(props.location.state);
+
+    window.scrollTo(1, 1);
   }, []);
   return (
     <Fragment>

@@ -1,7 +1,10 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import Breadcumb from "../Components/Breadcumb";
 
 const Contact = () => {
+  useEffect(() => {
+    window.scrollTo(1, 1);
+  }, []);
   return (
     <Fragment>
       <Breadcumb to="ContactUs" what="Contact Us" />

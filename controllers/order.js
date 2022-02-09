@@ -16,6 +16,7 @@ exports.getOrderById = (req, res, next, id) => {
 };
 
 exports.createOrder = (req, res, next) => {
+  console.log(req.body);
   req.body.user = req.profile;
   const order_obj = {
     address: {
@@ -26,6 +27,9 @@ exports.createOrder = (req, res, next) => {
     },
     amount: req.body.amount,
     product: req.body.product,
+    user: req.body.user,
+    transaction_id: req.body.paymentId,
+    order_id: req.body.orderId,
   };
   const order = new Order(order_obj);
   order.save((err, order) => {
@@ -39,7 +43,6 @@ exports.createOrder = (req, res, next) => {
 };
 
 exports.getAllOrders = (req, res) => {
-  console.log(12);
   Order.find()
     .populate("user", "_id firstname ")
     .exec((err, order) => {

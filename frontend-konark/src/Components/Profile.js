@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import { isAuthenticated } from "../api/Auth";
 
@@ -6,6 +6,13 @@ import Template from "../Components/Template";
 const { user } = isAuthenticated();
 
 const Profile = () => {
+  const [User, setUser] = useState([]);
+
+  console.log(User);
+
+  useEffect(() => {
+    setUser(user);
+  }, []);
   return (
     <>
       <Template active="profile" />
@@ -17,28 +24,28 @@ const Profile = () => {
                 <div class="media-body">
                   <ul class="user-profile-list">
                     <li>
-                      <span>Full Name:</span> {user.firstname} {user.lastname}
+                      <span>Full Name:</span> {User ? User.firstname : ""}{" "}
+                      {User ? User.lastname : ""}
                     </li>
                     <li>
                       <span>Country:</span> India
                     </li>
                     <li>
                       <span>Email:</span>
-                      {user.email}
+                      {User ? User.email : ""}
                     </li>
                     <li>
                       <span>Phone:</span>
-                      {user.phone}
+                      {User ? User.phone : ""}
                     </li>
                     <li>
                       <span>Orders:</span>
-                      {user.orders == "" ? "No Orders" : user.orders}
+                      {User.orders == "" ? "No Orders" : User.orders}
                     </li>
                     <li>
-                      <span>Phone:</span>
-                      {user.activePack == ""
+                      {User.activePack == ""
                         ? "No Active Packs"
-                        : user.activePack}
+                        : User.activePack}
                     </li>
                   </ul>
                 </div>

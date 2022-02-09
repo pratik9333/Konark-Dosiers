@@ -30,6 +30,7 @@ const Home = () => {
 
   useEffect(() => {
     setProducts(products);
+    window.scrollTo(1, 1);
   }, []);
 
   useLayoutEffect(() => {}, []);

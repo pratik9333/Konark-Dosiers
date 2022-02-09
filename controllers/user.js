@@ -1,5 +1,7 @@
 const User = require("../models/user");
 const Order = require("../models/order");
+const Recharge = require("../models/recharge");
+const moment = require("moment");
 
 exports.getUserById = (req, res, next, id) => {
   User.findById(id).exec((err, user) => {
@@ -92,9 +94,69 @@ exports.userPurchaseList = (req, res) => {
     });
 };
 
-exports.pushOrderInPurchaseList = (req, res, next) => {
+exports.setNewPackForUser = async (req, res) => {
+  try {
+    let startDate;
+    let currentDate;
+    startDate = new Date(Date.now());
+    currentDate = moment(startDate);
+    const user = req.profile;
+
+    console.log(Object.values(user.activePack)[0] === undefined);
+
+    const rechargePack = await Recharge.findById(req.params.packId);
+
+    const val = rechargePack.validityMonth;
+
+    if (user.newUser) {
+      return res
+        .status(401)
+        .json({ error: "You do not have any new connection" });
+    }
+    if (Object.values(user.activePack)[0] !== undefined) {
+      if (currentDate.format("Do MMMM YYYY") < user.activePack.expiresAt) {
+        return res
+          .status(401)
+          .json({ error: "Your current pack is still active" });
+      }
+    }
+
+    let endDateMoment = moment(startDate);
+
+    endDateMoment.add(val, "months").format("Do MMMM YYYY");
+
+    await User.findByIdAndUpdate(req.profile._id, {
+      "activePack.recharge": req.params.packId,
+      "activePack.expiresAt": endDateMoment.format("Do MMMM YYYY"),
+    });
+
+    return res.status(200).json({
+      success: true,
+      message:
+        "Selected Pack has been added to user's account, your pack will be active in few minutes",
+    });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ error: "Server has occured some problem, please try again" });
+  }
+};
+
+exports.pushOrderInPurchaseList = async (req, res, next) => {
   // Store this in DB
-  console.log(req.body);
+
+  const currentUser = await User.findById(req.profile._id);
+
+  if (req.body.recharge) {
+    if (currentUser.newUser === false) {
+      return res.status(401).json({
+        error:
+          "User has already old connection, please contact your isp for more details",
+      });
+    }
+  }
+
   const order_obj = {
     address: {
       fulladdress: req.body.address.fulladdress,
@@ -104,35 +166,64 @@ exports.pushOrderInPurchaseList = (req, res, next) => {
     },
     amount: req.body.amount,
     product: req.body.product,
+    transaction_id: req.body.paymentId,
+    order_id: req.body.orderId,
   };
-  User.findOneAndUpdate(
-    { _id: req.profile._id },
-    { $push: { orders: order_obj } },
-    { new: true },
-    (err, purchases) => {
-      if (err) {
-        return res.status(400).json({
-          error: "Unable to save purchase list",
-        });
+  if (req.body.recharge) {
+    User.findOneAndUpdate(
+      { _id: req.profile._id },
+      { $push: { orders: order_obj }, newUser: false },
+      { new: true },
+      (err, purchases) => {
+        if (err) {
+          return res.status(400).json({
+            error: "Unable to save purchase list",
+          });
+        }
+        next();
       }
-      next();
-    }
-  );
+    );
+  } else {
+    User.findOneAndUpdate(
+      { _id: req.profile._id },
+      { $push: { orders: order_obj } },
+      { new: true },
+      (err, purchases) => {
+        if (err) {
+          return res.status(400).json({
+            error: "Unable to save purchase list",
+          });
+        }
+        next();
+      }
+    );
+  }
 };
 
-exports.addToActivePack = (req, res, next) => {
+exports.addToActivePack = async (req, res) => {
   // Store this in DB
-  User.findOneAndUpdate(
-    { _id: req.profile._id },
-    { $push: { recharge: req.body.recharge } },
-    { new: true },
-    (err, purchases) => {
-      if (err) {
-        return res.status(400).json({
-          error: "Unable to save Recharge Pack list",
-        });
-      }
-      res.json(purchases);
+  try {
+    if (req.body.recharge) {
+      const rechargePack = await Recharge.findById(req.body.recharge);
+
+      const val = rechargePack.validityMonth;
+
+      const startDate = new Date(Date.now());
+      let endDateMoment = moment(startDate);
+      endDateMoment.add(val, "months").format("Do MMMM YYYY");
+
+      await User.findByIdAndUpdate(req.profile._id, {
+        "activePack.recharge": req.body.recharge,
+        "activePack.expiresAt": endDateMoment.format("Do MMMM YYYY"),
+      });
     }
-  );
+
+    return res.status(200).json({ success: true, message: "Order Created" });
+  } catch (error) {
+    console.log(error);
+    await Order.find({ user: req.profile._id }).remove();
+    return res
+      .status(200)
+      .json({ success: false, message: "Order failed to create" });
+  }
 };

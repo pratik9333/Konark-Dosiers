@@ -1,5 +1,6 @@
 const Recharge = require("../models/recharge");
 const { validationResult } = require("express-validator");
+let moment = require("moment");
 
 exports.getRechargeById = (req, res, next, id) => {
   Recharge.findById(id).exec((err, recharge) => {
@@ -83,4 +84,26 @@ exports.removePack = (req, res) => {
       deletedRecharge,
     });
   });
+};
+
+exports.checkPackExpiry = async (req, res) => {
+  try {
+    const user = req.profile;
+
+    if (user.activePack.recharge) {
+      const startDate = new Date(Date.now());
+      let currentDate = moment(startDate);
+
+      if (currentDate.format("Do MMMM YYYY") < user.activePack.expiresAt) {
+        user.activePack = undefined;
+      }
+      await user.save();
+    }
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ error: "Server has occured has problem, please try again" });
+  }
 };

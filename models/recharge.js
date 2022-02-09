@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { ObjectId } = mongoose.Schema;
 const rechargeSchema = new mongoose.Schema(
   {
     packname: {
@@ -13,10 +12,8 @@ const rechargeSchema = new mongoose.Schema(
       trim: true,
       required: true,
     },
-    validity: {
-      type: String,
-      trim: true,
-      maxlength: 32,
+    validityMonth: {
+      type: Number,
       required: true,
     },
     packprice: {
@@ -27,9 +24,8 @@ const rechargeSchema = new mongoose.Schema(
     },
     option: {
       type: String,
-      trim: true,
-      maxlength: 32,
       required: true,
+      enum: ["sd", "hd"],
     },
     activated: {
       type: Boolean,

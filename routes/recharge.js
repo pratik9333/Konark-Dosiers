@@ -40,12 +40,12 @@ router.post(
     }),
     check("packprice", "packprice should be Number!").isNumeric(),
     check("option", "Option should be atleast 3 char!").isLength({
-      min: 3,
+      min: 2,
     }),
   ],
   isSignedIn,
   isAuthenticated,
-  isAdmin,
+  isIsp,
   createPack
 );
 
@@ -65,11 +65,11 @@ router.get("/showactivepack", showActivePack);
 router.get("/packs/:userId", isSignedIn, isAuthenticated, isIsp, showPacks);
 
 //removePack
-router.get(
+router.delete(
   "/removepack/:userId/:rechargeId",
   isSignedIn,
   isAuthenticated,
-  isAdmin,
+  isIsp,
   removePack
 );
 
