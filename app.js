@@ -27,6 +27,10 @@ app.use("/api", productRoutes);
 app.use("/api", paymentBRoutes);
 app.use("/api", Cart);
 
+app.get("/", (req, res) => {
+  res.json({ message: "Hello from our api" });
+});
+
 // DB Connection
 mongoose
   .connect(process.env.DATABASE, {
