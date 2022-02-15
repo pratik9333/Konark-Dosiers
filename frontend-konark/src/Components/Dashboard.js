@@ -1,49 +1,38 @@
-import React, { useEffect, useState, useContext } from "react";
-
+import React, { useContext, useEffect } from "react";
 import { isAuthenticated } from "../api/Auth";
-
 import { getUser } from "../api/User";
+
 import Template from "../Components/Template";
 import { AppContext } from "../Context/AppContext";
+import { ToastContainer, toast } from "react-toastify";
+import { USER_INFO } from "../Context/action.types";
 
 const Dashboard = () => {
-  const [User, setUser] = useState();
-  const { user, token } = isAuthenticated();
-  const { packs } = useContext(AppContext);
+  const { state, dispatch } = useContext(AppContext);
 
-  let pack = undefined;
-  let userInfo = undefined;
+  const { user, token } = isAuthenticated();
 
   useEffect(() => {
+    //get user info
     getUser(user._id, token)
       .then((data) => {
         if (!data.error) {
-          setUser(data);
+          dispatch({ type: USER_INFO, payload: data });
+        } else {
+          toast.error("Cannot able to fetch user data");
         }
       })
       .catch((err) => {
-        console.log(err);
+        toast.error("Cannot able to fetch user data");
       });
   }, []);
 
-  if (packs.length > 0 && User && User.activePack) {
-    pack = packs.filter((pack) => pack._id === User.activePack.recharge);
-    userInfo = {
-      ...pack,
-      ...User,
-    };
-  } else {
-    userInfo = {
-      ...User,
-    };
-  }
-
   return (
     <div class="dashboard-wrapper user-dashboard">
-      {User ? (
+      {state.user && state.user.orders ? (
         <>
-          {" "}
-          <Template active="dashboard" userInfo={userInfo ? userInfo : null} />
+          <ToastContainer />
+          <Template active="dashboard" />
           <div class="total-order mt-40">
             <h1 className="mb-20">Profile Information</h1>
             <hr />
@@ -56,29 +45,35 @@ const Dashboard = () => {
                     <th>Email</th>
                     <th>Phone</th>
                     <th>Orders</th>
-                    <th>Active Plan</th>
+                    <th>Plan Activated ?</th>
                     <th></th>
                   </tr>
                 </thead>
                 <tbody style={{ color: "black" }}>
                   <tr>
                     <td>
-                      <span>{user.firstname}</span>
+                      <span>{state.user.firstname}</span>
                     </td>
                     <td>
-                      <span>{user.lastname}</span>
+                      <span>{state.user.lastname}</span>
                     </td>
                     <td>
-                      <span>{user.email}</span>
+                      <span>{state.user.email}</span>
                     </td>
                     <td>
-                      <span>{user.phone}</span>
+                      <span>{state.user.phone}</span>
                     </td>
                     <td>
-                      <span>{User.orders.length}</span>
+                      <span>
+                        {state.user.orders.length <= 0
+                          ? "No Orders"
+                          : state.user.orders.length}
+                      </span>
                     </td>
                     <td>
-                      <span>{pack ? pack[0].packname : "No Active Plan"}</span>
+                      <span>
+                        {state.user.activePack ? "Yes" : "No Plan activated"}
+                      </span>
                     </td>
                   </tr>
                 </tbody>
@@ -87,7 +82,7 @@ const Dashboard = () => {
           </div>
         </>
       ) : (
-        ""
+        <h2>Loading</h2>
       )}
     </div>
   );

@@ -1,20 +1,35 @@
-import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router";
+import React, { useState, useEffect, useContext } from "react";
+import { useHistory } from "react-router";
 
 import Template from "../Components/Template";
+import { AppContext } from "../Context/AppContext";
 
 const Address = () => {
-  let location = useLocation();
+  const { state, dispatch } = useContext(AppContext);
+  let userPack;
+  let history = useHistory();
 
+  useEffect(() => {
+    if (Object.keys(state.user).length === 0) {
+      history.push("/userdashboard");
+    }
+  }, []);
+
+  if (state.packs && state.user.activePack) {
+    userPack = state.packs.filter(
+      (pack) => pack._id == state.user.activePack.recharge
+    );
+  } else {
+    userPack = undefined;
+  }
+
+  console.log(userPack);
   return (
     <>
-      {location.state ? (
+      {state.user ? (
         <>
-          <Template
-            active="address"
-            userInfo={location.state ? location.state : null}
-          />
-          {location.state.activePack ? (
+          <Template active="address" />
+          {userPack ? (
             <div class="table-responsive">
               <table class="table">
                 <thead>
@@ -28,11 +43,11 @@ const Address = () => {
                 </thead>
                 <tbody>
                   <tr>
-                    <td>{location.state[0].packname}</td>
-                    <td>Rs. {location.state[0].packprice}</td>
-                    <td>{location.state[0].validityMonth} Month</td>
-                    <td>{location.state.activePack.expiresAt}</td>
-                    <td>{location.state[0].option}</td>
+                    <td>{userPack[0].packname}</td>
+                    <td>Rs. {userPack[0].packprice}</td>
+                    <td>{userPack[0].validityMonth} Month</td>
+                    <td>{state.user.activePack.expiresAt}</td>
+                    <td>{userPack[0].option}</td>
                   </tr>
                 </tbody>
               </table>
@@ -45,7 +60,7 @@ const Address = () => {
           )}
         </>
       ) : (
-        ""
+        <h2 className="text-center mt-40">Loading...</h2>
       )}
     </>
   );

@@ -10,8 +10,10 @@ import { isAuthenticated } from "../api/Auth";
 import { Link } from "react-router-dom";
 
 const Home = () => {
-  const { products } = useContext(AppContext);
+  const { state, dispatch } = useContext(AppContext);
   const [progress, setProgress] = useState(0);
+
+  console.log(state);
 
   const showToast = () => {
     if (!isAuthenticated()) {
@@ -46,8 +48,8 @@ const Home = () => {
               </div>
             </div>
 
-            {products
-              ? products.map((product) => (
+            {state.products.length > 0
+              ? state.products.map((product) => (
                   <>
                     {product.rechargePlans.length > 0 ? (
                       <div className="col-md-6">
@@ -125,8 +127,8 @@ const Home = () => {
             </div>
           </div>
           <div className="row">
-            {products
-              ? products.map((product) => (
+            {state.products.length > 0
+              ? state.products.map((product) => (
                   <>
                     {product.rechargePlans.length === 0 ? (
                       <div

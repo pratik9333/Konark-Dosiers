@@ -8,7 +8,7 @@ import logo from "../Images/logo.png";
 import headerimg from "../Images/shop/header-img.jpg";
 
 export const Header = () => {
-  const { packs } = useContext(AppContext);
+  const { state, dispatch } = useContext(AppContext);
 
   return (
     <Fragment>
@@ -174,13 +174,15 @@ export const Header = () => {
                     ></span>
                   </a>
                   <ul className="dropdown-menu">
-                    {packs.map((pack) => (
-                      <li>
-                        <Link to={{ pathname: "/packs", state: packs }}>
-                          {pack.packname}
-                        </Link>
-                      </li>
-                    ))}
+                    {state.packs > 0
+                      ? state.packs.map((pack) => (
+                          <li>
+                            <Link to={{ pathname: "/packs", state: state }}>
+                              {/* {pack.packname} */}
+                            </Link>
+                          </li>
+                        ))
+                      : ""}
                   </ul>
                 </li>
                 <li className="dropdown dropdown-slide">

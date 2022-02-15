@@ -1,40 +1,43 @@
 import "./App.css";
-import React, { useLayoutEffect, useState } from "react";
+import React, { useLayoutEffect, useReducer, useState } from "react";
 
 import { Routes } from "./Routes/Routes";
 import { AppContext } from "./Context/AppContext";
 import { getProducts } from "./api/Product";
 import { getPacks } from "./api/Recharge";
 
+//Actions
+import { SET_PRODUCTS, SET_PACKS } from "./Context/action.types";
+import { reducer, initialState } from "./Context/reducer";
+import { ToastContainer, toast } from "react-toastify";
+
 function App() {
-  const [products, setProducts] = useState([]);
-  const [error, setError] = useState(false);
-  const [packs, setPacks] = useState([]);
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   useLayoutEffect(() => {
     //getAllProducts
     getProducts().then((data) => {
       if (data.error) {
-        setError(data.error);
-        console.log(error);
+        toast.error("Cannot able to fetch products");
       } else {
-        setProducts(data);
+        dispatch({ type: SET_PRODUCTS, payload: data });
       }
     });
 
     //getAllPacks
     getPacks().then((data) => {
       if (data.error) {
-        setError(data.error);
+        toast.error("Cannot able to fetch packs");
       } else {
-        setPacks(data);
+        dispatch({ type: SET_PACKS, payload: data });
       }
     });
   }, []);
 
   return (
-    <AppContext.Provider value={{ products, packs }}>
+    <AppContext.Provider value={{ state, dispatch }}>
       <div>
+        <ToastContainer />
         <Routes />
       </div>
     </AppContext.Provider>

@@ -8,7 +8,7 @@ import Breadcumb from "../Components/Breadcumb";
 import { getUser } from "../api/User";
 
 const BuyConnection = () => {
-  const { products } = useContext(AppContext);
+  const { state, dispatch } = useContext(AppContext);
   const [User, setUser] = useState();
   const { user, token } = isAuthenticated();
   const [order, setOrder] = useState({
@@ -59,7 +59,7 @@ const BuyConnection = () => {
       </h1>
       <div className="container">
         <div className="row">
-          {products.map((product) => (
+          {state.products.map((product) => (
             <>
               {product.rechargePlans.length > 0 ? (
                 <div className="col-md-6">
