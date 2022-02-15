@@ -39,6 +39,7 @@ export const Routes = () => {
             <PrivateRoutes path="/orders" exact component={Orders} />
             <PrivateRoutes path="/address" exact component={Address} />
             <PrivateRoutes path="/userprofile" exact component={Profile} />
+
             <PrivateRoutes
               path="/confirmation"
               exact
@@ -49,12 +50,8 @@ export const Routes = () => {
               exact
               component={BuyConnection}
             />
-            <PrivateRoutes
-              path="/newconnection/order"
-              exact
-              component={Order}
-            />
-            <Route path="/productdetails" exact component={ProductInfo} />
+            <PrivateRoutes path="/order" exact component={Order} />
+            <Route path="/productdetails/:id" exact component={ProductInfo} />
             <Route path="/packs" exact component={Packs} />
             <Route path="/" exact component={Home} />
             <Route path="/about" exact component={About} />

@@ -6,6 +6,7 @@ import Breadcumb from "../Components/Breadcumb";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useHistory } from "react-router";
 
 const ProductInfo = (props) => {
   const [Product, setProduct] = useState({});
@@ -14,15 +15,19 @@ const ProductInfo = (props) => {
     if (!isAuthenticated()) {
       toast.error("Please Login to Buy!");
     } else {
-      toast.success("Redirecting");
+      history.push("/newconnection");
     }
   };
 
+  let history = useHistory();
+
+  console.log();
+
   useEffect(() => {
     setProduct(props.location.state);
-
     window.scrollTo(1, 1);
   }, []);
+
   return (
     <Fragment>
       <ToastContainer />
@@ -57,7 +62,11 @@ const ProductInfo = (props) => {
               onClick={showToast}
               className="btn btn-main mt-50"
             >
-              Buy Now
+              {props.match.params.id == 2 ? (
+                <span onClick={() => {}}>Add to cart</span>
+              ) : (
+                <span>Buy new connection</span>
+              )}
             </button>
           </div>
         </div>

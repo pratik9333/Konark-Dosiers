@@ -156,12 +156,10 @@ exports.getAllProducts = (req, res) => {
     });
 };
 
-exports.updateStock = (req, res, next) => {
-  const productId = req.body.product;
-  Product.findByIdAndUpdate(
-    productId,
-    { $inc: { stock: -1, sold: +1 } },
-    (err, data) => {}
-  );
+exports.updateStock = async (req, res, next) => {
+  const products = req.body.product;
+  for (let id of products) {
+    await Product.findByIdAndUpdate(id, { $inc: { stock: -1, sold: +1 } });
+  }
   next();
 };

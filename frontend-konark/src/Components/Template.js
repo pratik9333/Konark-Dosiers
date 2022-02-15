@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Breadcumb from "./Breadcumb";
 
@@ -13,38 +13,66 @@ const Template = (props) => {
               <ul class="list-inline dashboard-menu text-center">
                 <li>
                   {props.active == "dashboard" ? (
-                    <Link className="active" to="/userdashboard">
+                    <Link
+                      className="active"
+                      to={{
+                        pathname: "/userdashboard",
+                      }}
+                    >
                       Dashboard
                     </Link>
                   ) : (
-                    <Link to="/userdashboard">Dashboard</Link>
+                    <Link
+                      to={{
+                        pathname: "/userdashboard",
+                      }}
+                    >
+                      Dashboard
+                    </Link>
                   )}
                 </li>
                 <li>
                   {props.active == "orders" ? (
-                    <Link className="active" to="/Orders">
+                    <Link
+                      className="active"
+                      to={{
+                        pathname: "/Orders",
+                        state: props.userInfo,
+                      }}
+                    >
                       Orders
                     </Link>
                   ) : (
-                    <Link to="/Orders">Orders</Link>
+                    <Link
+                      to={{
+                        pathname: "/Orders",
+                        state: props.userInfo,
+                      }}
+                    >
+                      Orders
+                    </Link>
                   )}
                 </li>
                 <li>
                   {props.active == "address" ? (
-                    <Link className="active" to="/address">
-                      Address
+                    <Link
+                      className="active"
+                      to={{
+                        pathname: "/address",
+                        state: props.userInfo,
+                      }}
+                    >
+                      Active Pack Info
                     </Link>
                   ) : (
-                    <Link to="/address">Address</Link>
-                  )}
-                </li>
-                <li>
-                  {props.active == "profile" ? (
-                    <Link className="active" to="/userprofile">
-                      Profile
+                    <Link
+                      to={{
+                        pathname: "/address",
+                        state: props.userInfo,
+                      }}
+                    >
+                      Active Pack Info
                     </Link>
-                  ) : (
-                    <Link to="/userprofile">Profile</Link>
                   )}
                 </li>
               </ul>

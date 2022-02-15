@@ -1,10 +1,4 @@
-import React, {
-  Fragment,
-  useEffect,
-  useState,
-  useLayoutEffect,
-  useContext,
-} from "react";
+import React, { Fragment, useEffect, useState, useContext } from "react";
 import LoadingBar from "react-top-loading-bar";
 import "react-toastify/dist/ReactToastify.css";
 import Imagehelper from "../api/ImageHelper";
@@ -17,7 +11,6 @@ import { Link } from "react-router-dom";
 
 const Home = () => {
   const { products } = useContext(AppContext);
-  const [Products, setProducts] = useState([]);
   const [progress, setProgress] = useState(0);
 
   const showToast = () => {
@@ -29,11 +22,8 @@ const Home = () => {
   };
 
   useEffect(() => {
-    setProducts(products);
     window.scrollTo(1, 1);
   }, []);
-
-  useLayoutEffect(() => {}, []);
 
   return (
     <Fragment>
@@ -56,61 +46,74 @@ const Home = () => {
               </div>
             </div>
 
-            {Products.map((product) => (
-              <>
-                {product.name == "DEN SD" || product.name == "DEN HD" ? (
-                  <div className="col-md-6">
-                    <div class="card">
-                      <div class="view zoom overlay">
-                        <a href="#!">
-                          <div class="mask">
-                            <Imagehelper product={product} />
-                            <div class="mask rgba-black-slight"></div>
+            {products
+              ? products.map((product) => (
+                  <>
+                    {product.rechargePlans.length > 0 ? (
+                      <div className="col-md-6">
+                        <div class="card">
+                          <div class="view zoom overlay">
+                            <a href="#!">
+                              <div class="mask">
+                                <Imagehelper product={product} />
+                                <div class="mask rgba-black-slight"></div>
+                              </div>
+                            </a>
                           </div>
-                        </a>
-                      </div>
 
-                      <div class="card-body text-center">
-                        <h5>{product.name}</h5>
-                        <p class="small text-muted text-uppercase mb-2">
-                          {product.description}
-                        </p>
-                        <h6 class="mb-3">
-                          <span
-                            class="text-danger WebRupee mr-1"
-                            style={{ fontSize: "20px" }}
-                          >
-                            Rs. {product.price}
-                          </span>
-                        </h6>
-
-                        <button
-                          type="button"
-                          onClick={showToast}
-                          class="btn btn-primary btn-sm mr-4 mb-2"
-                          style={{ marginRight: "15px", marginBottom: "30px" }}
-                        >
-                          <i class="fas fa-shopping-cart pr-2"></i>Buy Now
-                        </button>
-                        <Link
-                          to={{ pathname: "/productdetails", state: product }}
-                        >
-                          <button
-                            type="button"
-                            class="btn btn-light btn-sm ml-1 mb-2"
-                            style={{ marginBottom: "30px" }}
-                          >
-                            <i class="fas fa-info-circle pr-2"></i>Details
-                          </button>
-                        </Link>
+                          <div class="card-body text-center">
+                            <h5>{product.name}</h5>
+                            <p class="small text-muted text-uppercase mb-2">
+                              {product.description}
+                            </p>
+                            <h6 class="mb-3">
+                              <span
+                                class="text-danger WebRupee mr-1"
+                                style={{ fontSize: "20px" }}
+                              >
+                                Rs. {product.price}
+                              </span>
+                            </h6>
+                            <Link
+                              to={{
+                                pathname: "/newconnection",
+                              }}
+                            >
+                              <button
+                                type="button"
+                                onClick={showToast}
+                                class="btn btn-primary btn-sm mr-4 mb-2"
+                                style={{
+                                  marginRight: "15px",
+                                  marginBottom: "30px",
+                                }}
+                              >
+                                <i class="fas fa-shopping-cart pr-2"></i>Buy Now
+                              </button>
+                            </Link>
+                            <Link
+                              to={{
+                                pathname: "/productdetails/" + 1,
+                                state: product,
+                              }}
+                            >
+                              <button
+                                type="button"
+                                class="btn btn-light btn-sm ml-1 mb-2"
+                                style={{ marginBottom: "30px" }}
+                              >
+                                <i class="fas fa-info-circle pr-2"></i>Details
+                              </button>
+                            </Link>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                ) : (
-                  ""
-                )}
-              </>
-            ))}
+                    ) : (
+                      ""
+                    )}
+                  </>
+                ))
+              : ""}
           </div>
         </div>
       </section>
@@ -122,55 +125,71 @@ const Home = () => {
             </div>
           </div>
           <div className="row">
-            {Products.map((product) => (
-              <div
-                class=" col-md-6 mb-5 mt-5 card"
-                style={{ marginTop: "28px" }}
-              >
-                <div class="view zoom overlay">
-                  <a href="#!">
-                    <div class="mask">
-                      <Imagehelper product={product} />
-                      <div class="mask rgba-black-slight"></div>
-                    </div>
-                  </a>
-                </div>
+            {products
+              ? products.map((product) => (
+                  <>
+                    {product.rechargePlans.length === 0 ? (
+                      <div
+                        class=" col-md-6 mb-5 mt-5 g-5"
+                        style={{ marginTop: "50px" }}
+                      >
+                        <div class="view zoom overlay">
+                          <a href="#!">
+                            <div class="mask">
+                              <Imagehelper product={product} />
+                              <div class="mask rgba-black-slight mb-5"></div>
+                            </div>
+                          </a>
+                        </div>
 
-                <div class="card-body text-center">
-                  <h5>{product.name}</h5>
-                  <p class="small text-muted text-uppercase mb-2">
-                    {product.description}
-                  </p>
-                  <h6 class="mb-3">
-                    <p
-                      class="text-danger WebRupee mr-1"
-                      style={{ fontSize: "20px" }}
-                    >
-                      <i class="fa fa-inr"></i>
-                      Rs. {product.price}
-                    </p>
-                  </h6>
+                        <div
+                          class="card-body text-center"
+                          style={{ marginTop: "30px" }}
+                        >
+                          <h5 className="mt-5">{product.name}</h5>
+                          <h6 class="mb-3">
+                            <p
+                              class="text-danger WebRupee mt-5 mr-1"
+                              style={{ fontSize: "20px", marginBottom: "20px" }}
+                            >
+                              <i class="fa fa-inr mt-5"></i>
+                              Rs. {product.price}
+                            </p>
+                          </h6>
 
-                  <button
-                    type="button"
-                    onClick={showToast}
-                    class="btn btn-primary btn-sm mr-4 mb-2"
-                    style={{ marginRight: "15px", marginBottom: "30px" }}
-                  >
-                    <i class="fas fa-shopping-cart pr-2"></i>Buy Now
-                  </button>
-                  <Link to={{ pathname: "/productdetails", state: product }}>
-                    <button
-                      type="button"
-                      class="btn btn-light btn-sm ml-1 mb-2"
-                      style={{ marginBottom: "30px" }}
-                    >
-                      <i class="fas fa-info-circle pr-2"></i>Details
-                    </button>
-                  </Link>
-                </div>
-              </div>
-            ))}
+                          <button
+                            type="button"
+                            onClick={showToast}
+                            class="btn btn-primary btn-sm mr-4 mb-2"
+                            style={{
+                              marginRight: "15px",
+                              marginBottom: "30px",
+                            }}
+                          >
+                            <i class="fas fa-shopping-cart pr-2"></i>Add To Cart
+                          </button>
+                          <Link
+                            to={{
+                              pathname: "/productdetails/" + 2,
+                              state: product,
+                            }}
+                          >
+                            <button
+                              type="button"
+                              class="btn btn-light btn-sm ml-1 mb-2"
+                              style={{ marginBottom: "30px" }}
+                            >
+                              <i class="fas fa-info-circle pr-2"></i>Details
+                            </button>
+                          </Link>
+                        </div>
+                      </div>
+                    ) : (
+                      ""
+                    )}
+                  </>
+                ))
+              : ""}
           </div>
         </div>
       </section>

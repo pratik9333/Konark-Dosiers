@@ -4,12 +4,11 @@ require("dotenv").config();
 const crypto = require("crypto");
 
 const razorpay = new Razorpay({
-  key_id: "rzp_test_pUm7R3AkjqGQ2Y",
-  key_secret: "iQxJNKlNGJdJCbrRqkYUwR2d",
+  key_id: "rzp_test_eSOOkkKjgukkFz",
+  key_secret: "bw1B5rjn7AxrMg9SqQO2S86b",
 });
 
 exports.razorpay = async (req, res) => {
-  console.log(req.body.amount);
   try {
     const options = {
       amount: req.body.amount, // amount in smallest currency unit
@@ -40,15 +39,16 @@ exports.successrazorpay = (req, res) => {
     // Creating our own digest
     // The format should be like this:
     // digest = hmac_sha256(orderCreationId + "|" + razorpayPaymentId, secret);
-    const shasum = crypto.createHmac("sha256", "iQxJNKlNGJdJCbrRqkYUwR2d");
+    const shasum = crypto.createHmac("sha256", "bw1B5rjn7AxrMg9SqQO2S86b");
 
     shasum.update(`${orderCreationId}|${razorpayPaymentId}`);
 
     const digest = shasum.digest("hex");
 
     // comaparing our digest with the actual signature
-    if (digest !== razorpaySignature)
+    if (digest !== razorpaySignature) {
       return res.status(400).json({ msg: "Transaction not legit!" });
+    }
 
     // THE PAYMENT IS LEGIT & VERIFIED
     // YOU CAN SAVE THE DETAILS IN YOUR DATABASE IF YOU WANT
@@ -59,6 +59,7 @@ exports.successrazorpay = (req, res) => {
       paymentId: razorpayPaymentId,
     });
   } catch (error) {
+    console.log(error);
     res.status(500).send(error);
   }
 };

@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useEffect, useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 
 import { Routes } from "./Routes/Routes";
 import { AppContext } from "./Context/AppContext";
@@ -11,7 +11,7 @@ function App() {
   const [error, setError] = useState(false);
   const [packs, setPacks] = useState([]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     //getAllProducts
     getProducts().then((data) => {
       if (data.error) {

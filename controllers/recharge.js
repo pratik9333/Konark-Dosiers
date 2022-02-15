@@ -59,7 +59,6 @@ exports.showActivePack = (req, res) => {
       activated: true,
     },
     (err, recharges) => {
-      console.log(recharges);
       res.json(recharges);
     }
   );
@@ -94,7 +93,7 @@ exports.checkPackExpiry = async (req, res) => {
       const startDate = new Date(Date.now());
       let currentDate = moment(startDate);
 
-      if (currentDate.format("Do MMMM YYYY") < user.activePack.expiresAt) {
+      if (currentDate.format("Do MMMM YYYY") > user.activePack.expiresAt) {
         user.activePack = undefined;
       }
       await user.save();

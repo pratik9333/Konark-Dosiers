@@ -1,4 +1,7 @@
 const Order = require("../models/order");
+const Recharge = require("../models/recharge");
+const User = require("../models/user");
+const moment = require("moment");
 
 exports.getOrderById = (req, res, next, id) => {
   Order.findById(id)
@@ -16,7 +19,6 @@ exports.getOrderById = (req, res, next, id) => {
 };
 
 exports.createOrder = (req, res, next) => {
-  console.log(req.body);
   req.body.user = req.profile;
   const order_obj = {
     address: {
@@ -43,34 +45,64 @@ exports.createOrder = (req, res, next) => {
 };
 
 exports.getAllOrders = (req, res) => {
-  Order.find()
-    .populate("user", "_id firstname ")
-    .exec((err, order) => {
-      if (err) {
-        return res.status(400).json({
-          error: "No Orders Found in DB!",
-        });
-      }
-
-      res.json(order);
-    });
-};
-
-exports.getOrderStatus = (req, res) => {
-  res.json(Order.schema.path("status").enumValues);
-};
-
-exports.updateStatus = (req, res) => {
-  Order.updateOne(
-    { _id: req.body.orderId },
-    { $set: { status: req.body.status } },
-    (err, order) => {
-      if (err) {
-        return res.status(400).json({
-          error: "Cannot Update Status",
-        });
-      }
-      res.json(order);
+  Order.find({ user: req.body.userid }).exec((err, order) => {
+    if (err) {
+      return res.status(400).json({
+        error: "No Orders Found in DB!",
+      });
     }
-  );
+
+    res.json(order);
+  });
+};
+
+exports.getUserOrders = async (req, res) => {
+  try {
+    const orders = await Order.find({ user: req.profile._id });
+
+    if (orders.length > 0) {
+      return res.status(200).json({ success: true, orders });
+    }
+
+    return res.status(200).json({ success: true, message: "No orders found" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Server error" });
+  }
+};
+
+exports.updateStatus = async (req, res) => {
+  try {
+    const order = await Order.findByIdAndUpdate(
+      req.params.orderId,
+      {
+        status: req.body.status,
+      },
+      { new: true }
+    );
+
+    if (order.status === "Delivered") {
+      const user = await User.findById(order.user);
+
+      if (
+        user.activePack !== undefined &&
+        user.activePack.expiresAt ===
+          "Subscription starts after product delivers"
+      ) {
+        const rechargePack = await Recharge.findById(user.activePack.recharge);
+        const val = rechargePack.validityMonth;
+
+        const startDate = new Date(Date.now());
+        let endDateMoment = moment(startDate);
+        endDateMoment.add(val, "months").format("Do MMMM YYYY");
+
+        user.activePack.expiresAt = endDateMoment.format("Do MMMM YYYY");
+        await user.save();
+      }
+    }
+    return res.status(200).json({ message: "Order updated" });
+  } catch (error) {
+    console.log(error);
+    return res.status(200).json({ error: "Server Error" });
+  }
 };

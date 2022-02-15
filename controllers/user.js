@@ -15,12 +15,15 @@ exports.getUserById = (req, res, next, id) => {
   });
 };
 
-exports.getUser = (req, res) => {
-  req.profile.salt = undefined;
-  req.profile.encryPassword = undefined;
-  req.profile.createdAt = undefined;
-  req.profile.updatedAt = undefined;
-  return res.json(req.profile);
+exports.getUser = async (req, res) => {
+  const user = await User.findById(req.profile._id);
+
+  user.encryPassword = undefined;
+  user.salt = undefined;
+  user.__v = undefined;
+  user.createdAt = undefined;
+  //eq.profile.orders = req.profile.orders.length;
+  return res.json(user);
 };
 
 exports.getAllUsers = (req, res) => {
@@ -102,7 +105,7 @@ exports.setNewPackForUser = async (req, res) => {
     currentDate = moment(startDate);
     const user = req.profile;
 
-    console.log(Object.values(user.activePack)[0] === undefined);
+    //console.log(Object.values(user.activePack)[0] === undefined);
 
     const rechargePack = await Recharge.findById(req.params.packId);
 
@@ -214,7 +217,7 @@ exports.addToActivePack = async (req, res) => {
 
       await User.findByIdAndUpdate(req.profile._id, {
         "activePack.recharge": req.body.recharge,
-        "activePack.expiresAt": endDateMoment.format("Do MMMM YYYY"),
+        "activePack.expiresAt": "Subscription starts after product delivers",
       });
     }
 

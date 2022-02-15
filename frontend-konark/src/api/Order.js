@@ -18,6 +18,23 @@ export const createOrder = async (userid, token, order) => {
     });
 };
 
+export const getUserOrders = async (userid, token) => {
+  return fetch(`${API}/orders/${userid}`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
 export const payment = async (amount, id, token) => {
   console.log(typeof amount);
   return fetch(`${API}/payment/${id}`, {

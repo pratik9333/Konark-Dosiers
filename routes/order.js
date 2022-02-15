@@ -14,7 +14,7 @@ const {
   createOrder,
   getAllOrders,
   updateStatus,
-  getOrderStatus,
+  getUserOrders,
 } = require("../controllers/order");
 
 //Params
@@ -23,6 +23,9 @@ router.param("orderId", getOrderById);
 router.param("productId", getProductById);
 
 //Actualroutes
+
+// get user orders
+router.get("/orders/:userId", isSignedIn, isAuthenticated, getUserOrders);
 
 //create
 router.post(
@@ -36,16 +39,14 @@ router.post(
 );
 
 //read
-router.get("/orders/all/:userId", isSignedIn, isAuthenticated, getAllOrders);
-
-//Status of order
 router.get(
-  "/order/status/:userId",
+  "/orders/all/:userId",
   isSignedIn,
   isAuthenticated,
   isAdmin,
-  getOrderStatus
+  getAllOrders
 );
+
 router.put(
   "/order/:orderId/status/:userId",
   isSignedIn,

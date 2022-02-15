@@ -32,7 +32,9 @@ const Packs = (props) => {
                   <h5 className="card-title" style={{ fontSize: "18px" }}>
                     {pack.packname}
                   </h5>
-                  <h6 className="card-subtitle mb-4 mt-2">{pack.option}</h6>
+                  <h6 className="card-subtitle  mb-4 mt-2">
+                    Type - {pack.option}
+                  </h6>
                   <p className="card-text" style={{ color: "#000" }}>
                     {pack.description}
                   </p>
@@ -45,7 +47,7 @@ const Packs = (props) => {
                   <p>
                     <span style={{ fontSize: "15px" }}>Validity -</span>{" "}
                     <span className="text-info font-weight-bold">
-                      {pack.validity}
+                      {pack.validityMonth} Month
                     </span>
                   </p>
                 </div>

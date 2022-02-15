@@ -1,5 +1,5 @@
-import React, { Fragment, useEffect, useContext, useState } from "react";
-import { Link, withRouter } from "react-router-dom";
+import React, { Fragment, useContext } from "react";
+import { Link } from "react-router-dom";
 import { isAuthenticated, signout } from "../api/Auth";
 import { AppContext } from "../Context/AppContext";
 
@@ -7,13 +7,8 @@ import { AppContext } from "../Context/AppContext";
 import logo from "../Images/logo.png";
 import headerimg from "../Images/shop/header-img.jpg";
 
-export const Header = ({ history }) => {
+export const Header = () => {
   const { packs } = useContext(AppContext);
-  const [Packs, setPack] = useState([]);
-
-  useEffect(() => {
-    setPack(packs);
-  }, []);
 
   return (
     <Fragment>
@@ -125,16 +120,13 @@ export const Header = ({ history }) => {
                           <li className="dropdown-header">User</li>
                           <li role="separator" className="divider"></li>
                           <li>
-                            <Link to="/userdashboard">User Dashboard</Link>
-                          </li>
-                          <li>
-                            <Link to="/orders">Orders</Link>
-                          </li>
-                          <li>
-                            <Link to="/address">Address</Link>
-                          </li>
-                          <li>
-                            <Link to="/userprofile">Profile Details</Link>
+                            <Link
+                              to={{
+                                pathname: "/userdashboard",
+                              }}
+                            >
+                              User Dashboard
+                            </Link>
                           </li>
                         </ul>
                       </div>
@@ -182,9 +174,9 @@ export const Header = ({ history }) => {
                     ></span>
                   </a>
                   <ul className="dropdown-menu">
-                    {Packs.map((pack) => (
+                    {packs.map((pack) => (
                       <li>
-                        <Link to={{ pathname: "/packs", state: Packs }}>
+                        <Link to={{ pathname: "/packs", state: packs }}>
                           {pack.packname}
                         </Link>
                       </li>
@@ -235,4 +227,4 @@ export const Header = ({ history }) => {
   );
 };
 
-export default withRouter(Header);
+export default Header;
