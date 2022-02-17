@@ -1,36 +1,58 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 
-import { Link, useHistory, Redirect } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { isAuthenticated } from "../api/Auth";
 import Imagehelper from "../api/ImageHelper";
 import { payment } from "../api/Order";
 import API from "../backend";
 import Breadcumb from "../Components/Breadcumb";
-import { ToastContainer, toast } from "react-toastify";
 import { getProduct } from "../api/Product";
+import { useAlert } from "react-alert";
+import { AppContext } from "../Context/AppContext";
 
 const Order = (props) => {
   const { user } = isAuthenticated();
   const [Product, setProduct] = useState();
   const [flag, setflag] = useState(true);
+  let alert = useAlert();
+  const { state, setCartItems } = useContext(AppContext);
 
   let history = useHistory();
 
   useEffect(() => {
-    if (!props.location.state) {
-      return history.push("/");
+    if (state.user.newUser && state.user.orders.length === 1) {
+      setTimeout(() => {
+        history.push("/");
+      }, 100);
+      return alert.info(
+        "Cannot purchase products before your first connection set up!"
+      );
     }
-    getProduct(props.location.state.productid)
-      .then((data) => {
-        if (data.error) {
-          return console.log(data.error);
-        }
-        setProduct(data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    if (!props.location.state) {
+      getProduct("62038049deb0ce0a89740258")
+        .then((data) => {
+          if (data.error) {
+            return console.log(data.error);
+          }
+          setProduct(data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      getProduct(props.location.state.productid)
+        .then((data) => {
+          if (data.error) {
+            return console.log(data.error);
+          }
+          setProduct(data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+
     window.scrollTo(1, 1);
   }, []);
 
@@ -93,7 +115,7 @@ const Order = (props) => {
         order.address.city === "" ||
         order.address.Country === ""
       ) {
-        return toast.error("Please fill in all the fields");
+        return alert.error("Please fill in all the fields");
       }
       const res = await loadScript(
         "https://checkout.razorpay.com/v1/checkout.js"
@@ -174,7 +196,6 @@ const Order = (props) => {
     <div>
       {Product ? (
         <div className="page-wrapper">
-          <ToastContainer />
           <Breadcumb what="Checkout" to="Checkout" />
           <div className="checkout shopping">
             <div className="container">
@@ -183,7 +204,10 @@ const Order = (props) => {
                   <div className="product-checkout-details">
                     <div className="block">
                       <h4 className="widget-title">Order Summary</h4>
-                      <div className="media product-card">
+                      <div
+                        className="media product-card d-flex align-items-baseline"
+                        style={{ display: "flex", alignItems: "center" }}
+                      >
                         <Link
                           className="pull-left"
                           to={{
@@ -200,7 +224,11 @@ const Order = (props) => {
                           ></h4>
                           <p
                             className="product"
-                            style={{ fontSize: "13px", marginTop: "10px" }}
+                            style={{
+                              fontSize: "16px",
+                              marginTop: "10px",
+                              color: "black",
+                            }}
                           >
                             Enjoy Using {Product.description}{" "}
                             <span style={{ fontWeight: "bold" }}>

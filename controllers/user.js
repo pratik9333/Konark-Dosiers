@@ -172,35 +172,20 @@ exports.pushOrderInPurchaseList = async (req, res, next) => {
     transaction_id: req.body.paymentId,
     order_id: req.body.orderId,
   };
-  if (req.body.recharge) {
-    User.findOneAndUpdate(
-      { _id: req.profile._id },
-      { $push: { orders: order_obj }, newUser: false },
-      { new: true },
-      (err, purchases) => {
-        if (err) {
-          return res.status(400).json({
-            error: "Unable to save purchase list",
-          });
-        }
-        next();
+
+  User.findOneAndUpdate(
+    { _id: req.profile._id },
+    { $push: { orders: order_obj } },
+    { new: true },
+    (err, purchases) => {
+      if (err) {
+        return res.status(400).json({
+          error: "Unable to save purchase list",
+        });
       }
-    );
-  } else {
-    User.findOneAndUpdate(
-      { _id: req.profile._id },
-      { $push: { orders: order_obj } },
-      { new: true },
-      (err, purchases) => {
-        if (err) {
-          return res.status(400).json({
-            error: "Unable to save purchase list",
-          });
-        }
-        next();
-      }
-    );
-  }
+      next();
+    }
+  );
 };
 
 exports.addToActivePack = async (req, res) => {

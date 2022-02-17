@@ -1,41 +1,62 @@
-import React, { Fragment, useEffect, useState, useContext } from "react";
-import LoadingBar from "react-top-loading-bar";
-import "react-toastify/dist/ReactToastify.css";
+import React, { Fragment, useEffect, useContext } from "react";
 import Imagehelper from "../api/ImageHelper";
 
 import { AppContext } from "../Context/AppContext";
 import { SliderJs } from "../Components/Slider";
-import { ToastContainer, toast } from "react-toastify";
+
 import { isAuthenticated } from "../api/Auth";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import { addCart } from "../api/cart";
+import { useAlert } from "react-alert";
 
 const Home = () => {
-  const { state, dispatch } = useContext(AppContext);
-  const [progress, setProgress] = useState(0);
+  const { state, setCartItems } = useContext(AppContext);
+  const { user, token } = isAuthenticated();
 
-  console.log(state);
+  let history = useHistory();
+  const alert = useAlert();
 
-  const showToast = () => {
+  const showToast = (data) => {
     if (!isAuthenticated()) {
-      toast.error("Please Login to Buy!");
+      alert.error("Please Login to Buy!");
     } else {
-      toast.success("Redirecting");
+      if (data === "new") {
+        return history.push("/newconnection");
+      }
+      if (state.user.newUser && state.user.orders.length === 1) {
+        return alert.info(
+          "Cannot purchase products before your first connection set up!"
+        );
+      }
+      if (state.user.newUser) {
+        return alert.error(
+          "Cannot purchase items before having new connection!"
+        );
+      }
+      if (!state.user.newUser && state.user.orders.length === 1) {
+        addCart(user._id, data, token)
+          .then((data) => {
+            if (data.error) {
+              return alert.show(data.error);
+            }
+            alert.show("Product added to cart");
+            setCartItems();
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
     }
   };
 
   useEffect(() => {
+    setCartItems();
     window.scrollTo(1, 1);
   }, []);
 
   return (
     <Fragment>
-      <ToastContainer />
       <SliderJs />
-      <LoadingBar
-        color="#f11946"
-        progress={progress}
-        onLoaderFinished={() => setProgress(0)}
-      />
       <section className="product-category section">
         <div className="container">
           <div className="row">
@@ -83,14 +104,17 @@ const Home = () => {
                             >
                               <button
                                 type="button"
-                                onClick={showToast}
+                                onClick={() => {
+                                  showToast("new");
+                                }}
                                 class="btn btn-primary btn-sm mr-4 mb-2"
                                 style={{
                                   marginRight: "15px",
                                   marginBottom: "30px",
                                 }}
                               >
-                                <i class="fas fa-shopping-cart pr-2"></i>Buy Now
+                                <i class="fas fa-shopping-cart pr-2"></i>Buy New
+                                Connection
                               </button>
                             </Link>
                             <Link
@@ -161,7 +185,9 @@ const Home = () => {
 
                           <button
                             type="button"
-                            onClick={showToast}
+                            onClick={() => {
+                              showToast(product._id);
+                            }}
                             class="btn btn-primary btn-sm mr-4 mb-2"
                             style={{
                               marginRight: "15px",

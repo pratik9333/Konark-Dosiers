@@ -18,6 +18,7 @@ export const signin = (user) => {
 export const signout = () => {
   if (typeof window !== "undefined") {
     localStorage.removeItem("jwt");
+    window.location.reload(true);
     return fetch(`${API}/signout`, {
       method: "GET",
     })

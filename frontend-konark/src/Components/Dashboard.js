@@ -4,11 +4,12 @@ import { getUser } from "../api/User";
 
 import Template from "../Components/Template";
 import { AppContext } from "../Context/AppContext";
-import { ToastContainer, toast } from "react-toastify";
 import { USER_INFO } from "../Context/action.types";
+import { useAlert } from "react-alert";
 
 const Dashboard = () => {
   const { state, dispatch } = useContext(AppContext);
+  let alert = useAlert();
 
   const { user, token } = isAuthenticated();
 
@@ -19,11 +20,11 @@ const Dashboard = () => {
         if (!data.error) {
           dispatch({ type: USER_INFO, payload: data });
         } else {
-          toast.error("Cannot able to fetch user data");
+          alert.error("Cannot able to fetch user data");
         }
       })
       .catch((err) => {
-        toast.error("Cannot able to fetch user data");
+        alert.error("Cannot able to fetch user data");
       });
   }, []);
 
@@ -31,7 +32,6 @@ const Dashboard = () => {
     <div class="dashboard-wrapper user-dashboard">
       {state.user && state.user.orders ? (
         <>
-          <ToastContainer />
           <Template active="dashboard" />
           <div class="total-order mt-40">
             <h1 className="mb-20">Profile Information</h1>

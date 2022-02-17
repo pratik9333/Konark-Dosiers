@@ -138,9 +138,17 @@ export const Header = () => {
                           <li>
                             <Link to="/">Recharge Plan</Link>
                           </li>
-                          <li>
-                            <Link to="/newconnection">Buy New Connection</Link>
-                          </li>
+                          {!state.user.newUser || state.user.activePack ? (
+                            <li>
+                              <Link to="/order">Cart</Link>
+                            </li>
+                          ) : (
+                            <li>
+                              <Link to="/newconnection">
+                                Buy New Connection
+                              </Link>
+                            </li>
+                          )}
                         </ul>
                       </div>
 
@@ -174,11 +182,13 @@ export const Header = () => {
                     ></span>
                   </a>
                   <ul className="dropdown-menu">
-                    {state.packs > 0
+                    {state.packs.length > 0
                       ? state.packs.map((pack) => (
                           <li>
-                            <Link to={{ pathname: "/packs", state: state }}>
-                              {/* {pack.packname} */}
+                            <Link
+                              to={{ pathname: "/packs", state: state.packs }}
+                            >
+                              {pack.packname}
                             </Link>
                           </li>
                         ))

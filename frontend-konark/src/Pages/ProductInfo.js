@@ -1,27 +1,42 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState, useContext } from "react";
 import { isAuthenticated } from "../api/Auth";
 import Imagehelper from "../api/ImageHelper";
+import { useAlert } from "react-alert";
 
 import Breadcumb from "../Components/Breadcumb";
 
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useHistory } from "react-router";
+import { AppContext } from "../Context/AppContext";
 
 const ProductInfo = (props) => {
   const [Product, setProduct] = useState({});
+  const { state, dispatch } = useContext(AppContext);
+  const alert = useAlert();
 
-  const showToast = () => {
+  const showToast = (data) => {
     if (!isAuthenticated()) {
-      toast.error("Please Login to Buy!");
+      alert.error("Please Login to Buy!");
     } else {
-      history.push("/newconnection");
+      if (data === "new") {
+        return history.push("/newconnection");
+      }
+      if (state.user.newUser && state.user.orders.length === 1) {
+        return alert.info(
+          "Cannot purchase products before your first connection set up!"
+        );
+      }
+      if (state.user.newUser) {
+        return alert.info(
+          "Cannot purchase items before having new connection!"
+        );
+      }
+      if (!state.user.newUser && state.user.orders.length === 1) {
+        alert.info("Added to cart");
+      }
     }
   };
 
   let history = useHistory();
-
-  console.log();
 
   useEffect(() => {
     setProduct(props.location.state);
@@ -30,7 +45,6 @@ const ProductInfo = (props) => {
 
   return (
     <Fragment>
-      <ToastContainer />
       <Breadcumb to="Product Details" what="Product Details" />
       <div className="row mt-50">
         <div className="col-md-5" style={{ marginTop: "80px" }}>
@@ -57,17 +71,25 @@ const ProductInfo = (props) => {
               <span>Category:</span>
               {Product.name}
             </div>
-            <button
-              type="button"
-              onClick={showToast}
-              className="btn btn-main mt-50"
-            >
-              {props.match.params.id == 2 ? (
-                <span onClick={() => {}}>Add to cart</span>
-              ) : (
-                <span>Buy new connection</span>
-              )}
-            </button>
+            {props.match.params.id == 2 ? (
+              <button
+                type="button"
+                onClick={showToast}
+                className="btn btn-main mt-50"
+              >
+                Add to cart
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => {
+                  showToast("new");
+                }}
+                className="btn btn-main mt-50"
+              >
+                Buy New Connection
+              </button>
+            )}
           </div>
         </div>
         <div className="col-xs-12 mt-50 p-5">

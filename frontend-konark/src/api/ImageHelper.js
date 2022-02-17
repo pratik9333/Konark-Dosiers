@@ -11,8 +11,8 @@ const Imagehelper = ({ product, where }) => {
         src={imageurl}
         alt="photo"
         style={{
-          maxHeight: where === "order" ? "120px" : "250px",
-          maxWidth: where === "order" ? "200px" : "80%",
+          maxHeight: where === "order" ? "230px" : "250px",
+          maxWidth: where === "order" ? "230px" : "80%",
           minHeight: where === "order" ? "" : "250px",
         }}
         className="mb-3 rounded"

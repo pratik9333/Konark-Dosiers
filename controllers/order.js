@@ -97,9 +97,11 @@ exports.updateStatus = async (req, res) => {
         endDateMoment.add(val, "months").format("Do MMMM YYYY");
 
         user.activePack.expiresAt = endDateMoment.format("Do MMMM YYYY");
+        user.newUser = false;
         await user.save();
       }
     }
+
     return res.status(200).json({ message: "Order updated" });
   } catch (error) {
     console.log(error);

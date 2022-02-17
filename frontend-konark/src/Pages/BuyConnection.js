@@ -1,28 +1,23 @@
 import React, { Fragment, useEffect, useState, useContext } from "react";
 import { Link, Redirect } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
 import { AppContext } from "../Context/AppContext";
-import { isAuthenticated } from "../api/Auth";
 import Imagehelper from "../api/ImageHelper";
 import Breadcumb from "../Components/Breadcumb";
-import { getUser } from "../api/User";
+import { useAlert } from "react-alert";
 
 const BuyConnection = () => {
   const { state, dispatch } = useContext(AppContext);
-  const [User, setUser] = useState();
-  const { user, token } = isAuthenticated();
   const [order, setOrder] = useState({
     productid: "",
     redirect: false,
   });
+  const alert = useAlert();
 
   const { redirect } = order;
 
   const handleProduct = (id) => {
-    if (!User.newUser) {
-      return toast.error(
-        "You already had buy connection, contact isp for more details"
-      );
+    if (!state.user.newUser || state.user.activePack) {
+      return alert.info("You already had connection!");
     }
     setOrder({ ...order, productid: id, redirect: true });
   };
@@ -33,23 +28,8 @@ const BuyConnection = () => {
     }
   };
 
-  useEffect(() => {
-    getUser(user._id, token)
-      .then((data) => {
-        if (data.error) {
-          return alert("Error");
-        }
-        setUser(data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    window.scrollTo(1, 1);
-  }, []);
-
   return (
     <Fragment>
-      <ToastContainer />
       <Breadcumb to="Buy Connection" what="Buy Connection" />
       <h1
         className="text-center"
