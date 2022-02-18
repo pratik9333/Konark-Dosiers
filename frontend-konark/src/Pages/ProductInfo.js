@@ -7,11 +7,14 @@ import Breadcumb from "../Components/Breadcumb";
 
 import { useHistory } from "react-router";
 import { AppContext } from "../Context/AppContext";
+import { addCart } from "../api/cart";
+import { ADD_CART } from "../Context/action.types";
 
 const ProductInfo = (props) => {
   const [Product, setProduct] = useState({});
   const { state, dispatch } = useContext(AppContext);
   const alert = useAlert();
+  const { user, token } = isAuthenticated();
 
   const showToast = (data) => {
     if (!isAuthenticated()) {
@@ -31,7 +34,17 @@ const ProductInfo = (props) => {
         );
       }
       if (!state.user.newUser && state.user.orders.length === 1) {
-        alert.info("Added to cart");
+        addCart(user._id, data, token)
+          .then((data) => {
+            if (data.error) {
+              return alert.show(data.error);
+            }
+            alert.success("Product added to cart");
+            dispatch({ type: ADD_CART, payload: data.cart });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       }
     }
   };
@@ -74,7 +87,9 @@ const ProductInfo = (props) => {
             {props.match.params.id == 2 ? (
               <button
                 type="button"
-                onClick={showToast}
+                onClick={() => {
+                  showToast(Product._id);
+                }}
                 className="btn btn-main mt-50"
               >
                 Add to cart

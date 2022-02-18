@@ -3,6 +3,7 @@ const Product = require("../models/product");
 
 exports.addToCart = async (req, res) => {
   try {
+    let cart;
     const userCart = await Cart.find({ user: req.profile._id });
     const product = await Product.findById(req.params.id);
     if (!product) {
@@ -16,26 +17,30 @@ exports.addToCart = async (req, res) => {
         }
       }
       userCart[0].products.push({
+        name: product.name,
         product: req.params.id,
         price: product.price,
+        totalPrice: product.price,
       });
-      userCart[0].total += product.price;
-      await userCart[0].save();
+      userCart[0].cartTotal += product.price;
+      cart = await userCart[0].save();
     } else {
       const products = [
         {
+          name: product.name,
           product: req.params.id,
           price: product.price,
+          totalPrice: product.price,
         },
       ];
 
-      await Cart.create({
+      cart = await Cart.create({
         products,
-        total: product.price,
+        cartTotal: product.price,
         user: req.profile._id,
       });
     }
-    return res.status(200).json({ success: "Added to cart" });
+    return res.status(200).json({ success: "Added to cart", cart });
   } catch (error) {
     console.log(error);
     res
@@ -71,25 +76,27 @@ exports.updateCart = async (req, res) => {
 
     if (incr) {
       userCart[0].products[findItem].quantity += 1;
-      userCart[0].products[findItem].price =
+      userCart[0].products[findItem].totalPrice =
         product.price * userCart[0].products[findItem].quantity;
-      userCart[0].total += product.price;
+      userCart[0].cartTotal += product.price;
     }
     if (decr) {
       if (userCart[0].products[findItem].quantity > 1) {
         userCart[0].products[findItem].quantity -= 1;
-        userCart[0].products[findItem].price =
+        userCart[0].products[findItem].totalPrice =
           product.price * userCart[0].products[findItem].quantity;
-        userCart[0].total -= product.price;
+        userCart[0].cartTotal -= product.price;
       } else {
         return res
           .status(200)
           .json({ success: false, message: "Quantity cannot be decreased" });
       }
     }
-    await userCart[0].save();
+    const cart = await userCart[0].save();
 
-    return res.status(200).json({ success: true, message: "Cart Updated" });
+    return res
+      .status(200)
+      .json({ success: true, message: "Cart Updated", cart });
   } catch (error) {
     console.log(error);
     res
@@ -116,6 +123,7 @@ exports.getUserSpecificCartItems = async (req, res) => {
 
 exports.removeCart = async (req, res) => {
   try {
+    let checkCartItem;
     const userCart = await Cart.find({ user: req.profile._id });
 
     const product = await Product.findById(req.params.id);
@@ -132,19 +140,24 @@ exports.removeCart = async (req, res) => {
     }
 
     if (userCart[0].products.length === 1) {
-      await userCart[0].remove();
+      checkCartItem = await userCart[0].remove();
+      if (checkCartItem.products.length === 1) {
+        return res.status(200).json({ success: true, message: "Cart Empty" });
+      }
     } else {
-      userCart[0].total =
-        userCart[0].total -
+      userCart[0].cartTotal =
+        userCart[0].cartTotal -
         product.price * userCart[0].products[findItem].quantity;
 
       userCart[0].products.splice(findItem, 1);
-      await userCart[0].save();
+      checkCartItem = await userCart[0].save();
     }
 
-    return res
-      .status(200)
-      .json({ success: true, message: "Item deleted from cart" });
+    return res.status(200).json({
+      success: true,
+      message: "Item was removed from cart",
+      cart: checkCartItem,
+    });
   } catch (error) {
     console.log(error);
     res

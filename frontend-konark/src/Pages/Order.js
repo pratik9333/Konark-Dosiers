@@ -5,20 +5,27 @@ import { Link, useHistory } from "react-router-dom";
 import { isAuthenticated } from "../api/Auth";
 import Imagehelper from "../api/ImageHelper";
 import { payment } from "../api/Order";
+
 import API from "../backend";
 import Breadcumb from "../Components/Breadcumb";
-import { getProduct } from "../api/Product";
 import { useAlert } from "react-alert";
 import { AppContext } from "../Context/AppContext";
+import { AiOutlinePlusCircle, AiOutlineMinusCircle } from "react-icons/ai";
+import { BiRupee } from "react-icons/bi";
+import { deleteCartItem, updateCartItem } from "../api/cart";
+import { ADD_CART } from "../Context/action.types";
 
 const Order = (props) => {
   const { user } = isAuthenticated();
-  const [Product, setProduct] = useState();
   const [flag, setflag] = useState(true);
+  const [progress, setProgress] = useState(0);
+  const [Products, setProducts] = useState();
   let alert = useAlert();
-  const { state, setCartItems } = useContext(AppContext);
+  const { state, dispatch } = useContext(AppContext);
 
   let history = useHistory();
+
+  let newConnectionProd = [];
 
   useEffect(() => {
     if (state.user.newUser && state.user.orders.length === 1) {
@@ -29,32 +36,17 @@ const Order = (props) => {
         "Cannot purchase products before your first connection set up!"
       );
     }
-    if (!props.location.state) {
-      getProduct("62038049deb0ce0a89740258")
-        .then((data) => {
-          if (data.error) {
-            return console.log(data.error);
-          }
-          setProduct(data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else {
-      getProduct(props.location.state.productid)
-        .then((data) => {
-          if (data.error) {
-            return console.log(data.error);
-          }
-          setProduct(data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
 
     window.scrollTo(1, 1);
   }, []);
+
+  if (state.products && props.location.state) {
+    for (let prod of state.products) {
+      if (prod._id === props.location.state.productid) {
+        newConnectionProd.push(prod);
+      }
+    }
+  }
 
   //Authentication
   const userId = isAuthenticated() && isAuthenticated().user._id;
@@ -75,13 +67,17 @@ const Order = (props) => {
     recharge: null,
   });
 
-  if (Product && flag) {
+  if (newConnectionProd.length > 0 && flag) {
     setOrderInfo({
       ...order,
-      amount: Product.rechargePlans[0].packprice + Product.price,
-      product: [Product._id],
+      amount:
+        newConnectionProd[0].rechargePlans[0].packprice +
+        newConnectionProd[0].price,
+      product: [newConnectionProd[0]._id],
       recharge:
-        Product.rechargePlans.length > 0 ? Product.rechargePlans[0]._id : null,
+        newConnectionProd[0].rechargePlans.length > 0
+          ? newConnectionProd[0].rechargePlans[0]._id
+          : null,
     });
     setflag(!flag);
   }
@@ -91,6 +87,50 @@ const Order = (props) => {
       ...order,
       address: { ...order.address, [e.target.name]: e.target.value },
     });
+  };
+
+  const removeCartItem = (id) => {
+    deleteCartItem(user._id, id, token)
+      .then((data) => {
+        if (data.error) {
+          return alert.error("Product cannot be removed");
+        }
+        if (data.message === "Cart Empty") {
+          dispatch({ type: ADD_CART, payload: null });
+          return alert.success("Cart is empty");
+        }
+        dispatch({ type: ADD_CART, payload: data.cart });
+        alert.success("Product was removed from cart");
+      })
+      .catch((data) => {
+        console.log(data);
+      });
+  };
+
+  const updateCart = (action, data) => {
+    if (action === "incr") {
+      updateCartItem(user._id, data, token, { incr: true, decr: false })
+        .then((data) => {
+          if (data.error) {
+            return alert.error("Product cannot be updated");
+          }
+          dispatch({ type: ADD_CART, payload: data.cart });
+        })
+        .catch((data) => {
+          console.log(data);
+        });
+    } else {
+      updateCartItem(user._id, data, token, { incr: false, decr: true })
+        .then((data) => {
+          if (data.message === "Quantity cannot be decreased") {
+            return alert.error("Product cannot be updated");
+          }
+          dispatch({ type: ADD_CART, payload: data.cart });
+        })
+        .catch((data) => {
+          console.log(data);
+        });
+    }
   };
 
   function loadScript(src) {
@@ -194,7 +234,7 @@ const Order = (props) => {
 
   return (
     <div>
-      {Product ? (
+      {newConnectionProd.length > 0 || state.cart ? (
         <div className="page-wrapper">
           <Breadcumb what="Checkout" to="Checkout" />
           <div className="checkout shopping">
@@ -203,42 +243,196 @@ const Order = (props) => {
                 <div className="col-md-12">
                   <div className="product-checkout-details">
                     <div className="block">
-                      <h4 className="widget-title">Order Summary</h4>
-                      <div
-                        className="media product-card d-flex align-items-baseline"
-                        style={{ display: "flex", alignItems: "center" }}
-                      >
-                        <Link
-                          className="pull-left"
-                          to={{
-                            pathname: "/productdetails",
-                            state: Product,
-                          }}
+                      <h4 className="widget-title">
+                        {state.cart.products ? "Cart Items" : "Product Details"}
+                      </h4>
+                      {state.user.newUser && state.user.orders.length === 0 ? (
+                        <div
+                          className="media product-card d-flex align-items-baseline"
+                          style={{ display: "flex", alignItems: "center" }}
                         >
-                          <Imagehelper where="order" product={Product} />
-                        </Link>
-                        <div className="media-body">
-                          <h4
-                            className="media-heading"
-                            style={{ fontSize: "23px", color: "#000" }}
-                          ></h4>
-                          <p
-                            className="product"
-                            style={{
-                              fontSize: "16px",
-                              marginTop: "10px",
-                              color: "black",
+                          <Link
+                            className="pull-left"
+                            to={{
+                              pathname: "/productdetails",
+                              state: newConnectionProd[0],
                             }}
                           >
-                            Enjoy Using {Product.description}{" "}
-                            <span style={{ fontWeight: "bold" }}>
-                              and included your choosen recharge pack{" "}
-                            </span>
-                          </p>
+                            <Imagehelper
+                              where="difforder"
+                              product={newConnectionProd[0]}
+                            />
+                          </Link>
+                          <div className="media-body">
+                            <h4
+                              className="media-heading"
+                              style={{ fontSize: "23px", color: "#000" }}
+                            ></h4>
+                            <p
+                              className="product"
+                              style={{
+                                fontSize: "16px",
+                                marginTop: "10px",
+                                color: "black",
+                              }}
+                            >
+                              Enjoy Using {newConnectionProd[0].name}{" "}
+                              <span style={{ fontWeight: "bold" }}>
+                                with included your choosen recharge pack{" "}
+                              </span>
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                      <div className="discount-code">
-                        <p className="mb-40" style={{ marginBottom: "10px" }}>
+                      ) : (
+                        <div className="row text-center">
+                          <div
+                            className="col-md-3"
+                            style={{ fontSize: "20px", fontWeight: "normal" }}
+                          >
+                            Product Details
+                          </div>
+                          <div
+                            className="col-md-3"
+                            style={{ fontSize: "20px", fontWeight: "normal" }}
+                          >
+                            Quantity
+                          </div>
+                          <div
+                            className="col-md-3"
+                            style={{ fontSize: "20px", fontWeight: "normal" }}
+                          >
+                            Price
+                          </div>
+                          <div
+                            className="col-md-3"
+                            style={{ fontSize: "20px", fontWeight: "normal" }}
+                          >
+                            Total Price
+                          </div>
+                        </div>
+                      )}
+                      {!state.user.newUser && state.cart.products
+                        ? state.cart.products.map((prod) => (
+                            <>
+                              <div
+                                className="row text-center"
+                                style={{
+                                  display: "flex",
+                                  flexWrap: "wrap",
+                                  alignItems: "center",
+                                  marginTop: "30px",
+                                }}
+                              >
+                                <div className="col-md-3">
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                    }}
+                                  >
+                                    <Imagehelper product={prod} where="order" />
+                                    <h4
+                                      style={{
+                                        fontSize: "16px",
+                                        fontWeight: "400",
+                                      }}
+                                    >
+                                      {prod.name}
+                                    </h4>
+                                  </div>
+                                  <p
+                                    style={{
+                                      display: "block",
+                                      marginLeft: "60px",
+                                      color: "red",
+                                      cursor: "pointer",
+                                    }}
+                                    onClick={() => {
+                                      removeCartItem(prod.product);
+                                    }}
+                                  >
+                                    remove
+                                  </p>
+                                </div>
+                                <div className="col-md-3">
+                                  <span
+                                    style={{
+                                      fontSize: "17px",
+                                      display: "flex",
+                                      justifyContent: "center",
+                                      alignItems: "center",
+                                    }}
+                                  >
+                                    <span
+                                      className="pr-40"
+                                      onClick={() => {
+                                        updateCart("incr", prod.product);
+                                      }}
+                                      style={{ cursor: "pointer" }}
+                                    >
+                                      <AiOutlinePlusCircle size="23px" />
+                                    </span>
+                                    <span
+                                      className="prod-quantity"
+                                      style={{
+                                        marginRight: "10px",
+                                        marginLeft: "10px",
+                                        fontSize: "18px",
+                                        color: "black",
+                                        fontWeight: "bold",
+                                      }}
+                                    >
+                                      {prod.quantity}
+                                    </span>
+                                    <span
+                                      onClick={() => {
+                                        updateCart("decr", prod.product);
+                                      }}
+                                      style={{ cursor: "pointer" }}
+                                    >
+                                      <AiOutlineMinusCircle size="23px" />
+                                    </span>
+                                  </span>
+                                </div>
+                                <div className="col-md-3">
+                                  <span>
+                                    <BiRupee /> &nbsp;
+                                    <span
+                                      style={{
+                                        fontSize: "17px",
+                                        fontWeight: "bold",
+                                      }}
+                                    >
+                                      {prod.price}
+                                    </span>
+                                  </span>
+                                </div>
+                                <div className="col-md-3">
+                                  <span>
+                                    <BiRupee /> &nbsp;
+                                    <span
+                                      style={{
+                                        fontSize: "17px",
+                                        fontWeight: "bold",
+                                      }}
+                                    >
+                                      {prod.totalPrice}
+                                    </span>
+                                  </span>
+                                </div>
+                              </div>
+                              <hr className="hero" />
+                            </>
+                          ))
+                        : ""}
+
+                      <h4 className="mt-40 mb-40 pb-40">Order Summary</h4>
+
+                      <div className="discount-code mt-40">
+                        <p
+                          className="mb-40 mt-40"
+                          style={{ marginBottom: "10px", marginTop: "10px " }}
+                        >
                           Have a discount ?{" "}
                         </p>
                         <form>
@@ -259,19 +453,37 @@ const Order = (props) => {
                           <span>Shipping:</span>
                           <span>Free</span>
                         </li>
-                        <li>
-                          <span>Recharge Pack Price:</span>
-                          <span>RS. {Product.rechargePlans[0].packprice}</span>
-                        </li>
-                        <li>
-                          <span>DTH BOX Price:</span>
-                          <span>RS. {Product.price}</span>
-                        </li>
+                        {state.user.newUser &&
+                        state.user.orders.length === 0 ? (
+                          <>
+                            {" "}
+                            <li>
+                              <span>Recharge Pack Price:</span>
+                              <span>
+                                RS.{" "}
+                                {
+                                  newConnectionProd[0].rechargePlans[0]
+                                    .packprice
+                                }
+                              </span>
+                            </li>
+                            <li>
+                              <span>DTH BOX Price:</span>
+                              <span>RS. {newConnectionProd[0].price}</span>
+                            </li>{" "}
+                          </>
+                        ) : (
+                          ""
+                        )}
                         <li>
                           <span>Subtotal:</span>
                           <span className="price">
                             RS{" "}
-                            {Product.rechargePlans[0].packprice + Product.price}
+                            {state.user.newUser &&
+                            state.user.orders.length === 0
+                              ? newConnectionProd[0].rechargePlans[0]
+                                  .packprice + newConnectionProd[0].price
+                              : state.cart.cartTotal}
                           </span>
                         </li>
                       </ul>
@@ -279,7 +491,10 @@ const Order = (props) => {
                         <span>Total</span>
                         <span>
                           RS.{" "}
-                          {Product.rechargePlans[0].packprice + Product.price}
+                          {state.user.newUser && state.user.orders.length === 0
+                            ? newConnectionProd[0].rechargePlans[0].packprice +
+                              newConnectionProd[0].price
+                            : state.cart.cartTotal}
                         </span>
                       </div>
                     </div>
@@ -351,7 +566,9 @@ const Order = (props) => {
           </div>
         </div>
       ) : (
-        ""
+        <h1 className="text-center mt-40" style={{ marginTop: "100px" }}>
+          User cart is empty !
+        </h1>
       )}
     </div>
   );

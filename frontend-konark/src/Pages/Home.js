@@ -8,13 +8,16 @@ import { isAuthenticated } from "../api/Auth";
 import { Link, useHistory } from "react-router-dom";
 import { addCart } from "../api/cart";
 import { useAlert } from "react-alert";
-
+import { ADD_CART } from "../Context/action.types";
+import { TailSpin } from "react-loader-spinner";
 const Home = () => {
-  const { state, setCartItems } = useContext(AppContext);
+  const { state, dispatch } = useContext(AppContext);
   const { user, token } = isAuthenticated();
 
   let history = useHistory();
   const alert = useAlert();
+
+  console.log(state.cart);
 
   const showToast = (data) => {
     if (!isAuthenticated()) {
@@ -39,8 +42,8 @@ const Home = () => {
             if (data.error) {
               return alert.show(data.error);
             }
-            alert.show("Product added to cart");
-            setCartItems();
+            alert.success("Product added to cart");
+            dispatch({ type: ADD_CART, payload: data.cart });
           })
           .catch((err) => {
             console.log(err);
@@ -50,7 +53,7 @@ const Home = () => {
   };
 
   useEffect(() => {
-    setCartItems();
+    //setCartItems();
     window.scrollTo(1, 1);
   }, []);
 
@@ -69,136 +72,57 @@ const Home = () => {
               </div>
             </div>
 
-            {state.products.length > 0
-              ? state.products.map((product) => (
-                  <>
-                    {product.rechargePlans.length > 0 ? (
-                      <div className="col-md-6">
-                        <div class="card">
-                          <div class="view zoom overlay">
-                            <a href="#!">
-                              <div class="mask">
-                                <Imagehelper product={product} />
-                                <div class="mask rgba-black-slight"></div>
-                              </div>
-                            </a>
-                          </div>
-
-                          <div class="card-body text-center">
-                            <h5>{product.name}</h5>
-                            <p class="small text-muted text-uppercase mb-2">
-                              {product.description}
-                            </p>
-                            <h6 class="mb-3">
-                              <span
-                                class="text-danger WebRupee mr-1"
-                                style={{ fontSize: "20px" }}
-                              >
-                                Rs. {product.price}
-                              </span>
-                            </h6>
-                            <Link
-                              to={{
-                                pathname: "/newconnection",
-                              }}
-                            >
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  showToast("new");
-                                }}
-                                class="btn btn-primary btn-sm mr-4 mb-2"
-                                style={{
-                                  marginRight: "15px",
-                                  marginBottom: "30px",
-                                }}
-                              >
-                                <i class="fas fa-shopping-cart pr-2"></i>Buy New
-                                Connection
-                              </button>
-                            </Link>
-                            <Link
-                              to={{
-                                pathname: "/productdetails/" + 1,
-                                state: product,
-                              }}
-                            >
-                              <button
-                                type="button"
-                                class="btn btn-light btn-sm ml-1 mb-2"
-                                style={{ marginBottom: "30px" }}
-                              >
-                                <i class="fas fa-info-circle pr-2"></i>Details
-                              </button>
-                            </Link>
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      ""
-                    )}
-                  </>
-                ))
-              : ""}
-          </div>
-        </div>
-      </section>
-      <section className="products section bg-gray">
-        <div className="container">
-          <div className="row">
-            <div className="title text-center">
-              <h1>Products</h1>
-            </div>
-          </div>
-          <div className="row">
-            {state.products.length > 0
-              ? state.products.map((product) => (
-                  <>
-                    {product.rechargePlans.length === 0 ? (
-                      <div
-                        class=" col-md-6 mb-5 mt-5 g-5"
-                        style={{ marginTop: "50px" }}
-                      >
+            {state.products.length > 0 ? (
+              state.products.map((product) => (
+                <>
+                  {product.rechargePlans.length > 0 ? (
+                    <div className="col-md-6">
+                      <div class="card">
                         <div class="view zoom overlay">
                           <a href="#!">
                             <div class="mask">
                               <Imagehelper product={product} />
-                              <div class="mask rgba-black-slight mb-5"></div>
+                              <div class="mask rgba-black-slight"></div>
                             </div>
                           </a>
                         </div>
 
-                        <div
-                          class="card-body text-center"
-                          style={{ marginTop: "30px" }}
-                        >
-                          <h5 className="mt-5">{product.name}</h5>
+                        <div class="card-body text-center">
+                          <h5>{product.name}</h5>
+                          <p class="small text-muted text-uppercase mb-2">
+                            {product.description}
+                          </p>
                           <h6 class="mb-3">
-                            <p
-                              class="text-danger WebRupee mt-5 mr-1"
-                              style={{ fontSize: "20px", marginBottom: "20px" }}
+                            <span
+                              class="text-danger WebRupee mr-1"
+                              style={{ fontSize: "20px" }}
                             >
-                              <i class="fa fa-inr mt-5"></i>
                               Rs. {product.price}
-                            </p>
+                            </span>
                           </h6>
-
-                          <button
-                            type="button"
-                            onClick={() => {
-                              showToast(product._id);
-                            }}
-                            class="btn btn-primary btn-sm mr-4 mb-2"
-                            style={{
-                              marginRight: "15px",
-                              marginBottom: "30px",
-                            }}
-                          >
-                            <i class="fas fa-shopping-cart pr-2"></i>Add To Cart
-                          </button>
                           <Link
                             to={{
-                              pathname: "/productdetails/" + 2,
+                              pathname: "/newconnection",
+                            }}
+                          >
+                            <button
+                              type="button"
+                              onClick={() => {
+                                showToast("new");
+                              }}
+                              class="btn btn-primary btn-sm mr-4 mb-2"
+                              style={{
+                                marginRight: "15px",
+                                marginBottom: "30px",
+                              }}
+                            >
+                              <i class="fas fa-shopping-cart pr-2"></i>Buy New
+                              Connection
+                            </button>
+                          </Link>
+                          <Link
+                            to={{
+                              pathname: "/productdetails/" + 1,
                               state: product,
                             }}
                           >
@@ -212,12 +136,93 @@ const Home = () => {
                           </Link>
                         </div>
                       </div>
-                    ) : (
-                      ""
-                    )}
-                  </>
-                ))
-              : ""}
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </>
+              ))
+            ) : (
+              <div>
+                <div class="spinner">Loading</div>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+      <section className="products section bg-gray">
+        <div className="container">
+          <div className="row">
+            <div className="title text-center">
+              <h1>Products</h1>
+            </div>
+          </div>
+          <div className="row">
+            {state.products.map((product) => (
+              <>
+                {product.rechargePlans.length === 0 ? (
+                  <div
+                    class=" col-md-6 mb-5 mt-5 g-5"
+                    style={{ marginTop: "50px" }}
+                  >
+                    <div class="view zoom overlay">
+                      <a href="#!">
+                        <div class="mask">
+                          <Imagehelper product={product} />
+                          <div class="mask rgba-black-slight mb-5"></div>
+                        </div>
+                      </a>
+                    </div>
+
+                    <div
+                      class="card-body text-center"
+                      style={{ marginTop: "30px" }}
+                    >
+                      <h5 className="mt-5">{product.name}</h5>
+                      <h6 class="mb-3">
+                        <p
+                          class="text-danger WebRupee mt-5 mr-1"
+                          style={{ fontSize: "20px", marginBottom: "20px" }}
+                        >
+                          <i class="fa fa-inr mt-5"></i>
+                          Rs. {product.price}
+                        </p>
+                      </h6>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          showToast(product._id);
+                        }}
+                        class="btn btn-primary btn-sm mr-4 mb-2"
+                        style={{
+                          marginRight: "15px",
+                          marginBottom: "30px",
+                        }}
+                      >
+                        <i class="fas fa-shopping-cart pr-2"></i>Add To Cart
+                      </button>
+                      <Link
+                        to={{
+                          pathname: "/productdetails/" + 2,
+                          state: product,
+                        }}
+                      >
+                        <button
+                          type="button"
+                          class="btn btn-light btn-sm ml-1 mb-2"
+                          style={{ marginBottom: "30px" }}
+                        >
+                          <i class="fas fa-info-circle pr-2"></i>Details
+                        </button>
+                      </Link>
+                    </div>
+                  </div>
+                ) : (
+                  ""
+                )}
+              </>
+            ))}
           </div>
         </div>
       </section>

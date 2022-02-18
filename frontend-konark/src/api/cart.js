@@ -58,6 +58,7 @@ export const deleteCartItem = (userid, prodid, token) => {
     },
   })
     .then((response) => {
+      console.log(response);
       return response.json();
     })
     .catch((err) => console.log(err));

@@ -8,6 +8,9 @@ const cartSchema = new mongoose.Schema({
         ref: "Product",
         required: true,
       },
+      name: {
+        type: String,
+      },
       quantity: {
         type: Number,
         default: 1,
@@ -16,9 +19,12 @@ const cartSchema = new mongoose.Schema({
         type: Number,
         required: true,
       },
+      totalPrice: {
+        type: Number,
+      },
     },
   ],
-  total: {
+  cartTotal: {
     type: Number,
   },
   user: {

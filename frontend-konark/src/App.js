@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useLayoutEffect, useReducer, useState } from "react";
+import React, { useLayoutEffect, useReducer } from "react";
 
 import { Routes } from "./Routes/Routes";
 import { AppContext } from "./Context/AppContext";
@@ -28,6 +28,9 @@ const App = () => {
     if (isAuthenticated()) {
       getCartItems(user._id, token)
         .then((data) => {
+          if (data.message === "Cart is empty") {
+            dispatch({ type: ADD_CART, payload: null });
+          }
           dispatch({ type: ADD_CART, payload: data.userCart[0] });
         })
         .catch((err) => {
@@ -59,6 +62,7 @@ const App = () => {
         .catch((err) => {
           alert.error("Cannot able to fetch user data");
         });
+      setCartItems();
     }
     //getAllPacks
     getPacks().then((data) => {

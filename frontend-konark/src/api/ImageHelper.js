@@ -1,9 +1,10 @@
 import React from "react";
 import API from "../backend";
 const Imagehelper = ({ product, where }) => {
-  const imageurl = product
-    ? `${API}/product/photo/${product._id}`
-    : "https://images.ctfassets.net/hrltx12pl8hq/3MbF54EhWUhsXunc5Keueb/60774fbbff86e6bf6776f1e17a8016b4/04-nature_721703848.jpg?fit=fill&w=480&h=270";
+  const imageurl =
+    where === "order"
+      ? `${API}/product/photo/${product.product}`
+      : `${API}/product/photo/${product._id}`;
 
   return (
     <div className="rounded border border-success p-2 text-center">
@@ -11,9 +12,13 @@ const Imagehelper = ({ product, where }) => {
         src={imageurl}
         alt="photo"
         style={{
-          maxHeight: where === "order" ? "230px" : "250px",
-          maxWidth: where === "order" ? "230px" : "80%",
-          minHeight: where === "order" ? "" : "250px",
+          maxHeight:
+            where === "order" || where === "difforder" ? "190px" : "250px",
+          maxWidth:
+            where === "order" || where === "difforder" ? "200px" : "80%",
+          minHeight:
+            where === "order" || where === "difforder" ? "130px" : "250px",
+          minWidth: where === "order" || where === "difforder" ? "130px" : "",
         }}
         className="mb-3 rounded"
       />
