@@ -19,7 +19,7 @@ const Template = (props) => {
                         pathname: "/userdashboard",
                       }}
                     >
-                      Dashboard
+                      Profile Details
                     </Link>
                   ) : (
                     <Link
@@ -27,7 +27,7 @@ const Template = (props) => {
                         pathname: "/userdashboard",
                       }}
                     >
-                      Dashboard
+                      Profile Details
                     </Link>
                   )}
                 </li>
@@ -40,7 +40,7 @@ const Template = (props) => {
                         state: props.userInfo,
                       }}
                     >
-                      Orders
+                      Orders Detail
                     </Link>
                   ) : (
                     <Link
@@ -49,7 +49,7 @@ const Template = (props) => {
                         state: props.userInfo,
                       }}
                     >
-                      Orders
+                      Orders Detail
                     </Link>
                   )}
                 </li>
@@ -58,20 +58,20 @@ const Template = (props) => {
                     <Link
                       className="active"
                       to={{
-                        pathname: "/address",
+                        pathname: "/packdetails",
                         state: props.userInfo,
                       }}
                     >
-                      Active Pack Info
+                      Pack Details
                     </Link>
                   ) : (
                     <Link
                       to={{
-                        pathname: "/address",
+                        pathname: "/packdetails",
                         state: props.userInfo,
                       }}
                     >
-                      Active Pack Info
+                      Pack Detail
                     </Link>
                   )}
                 </li>

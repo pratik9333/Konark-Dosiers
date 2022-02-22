@@ -1,4 +1,5 @@
 const Cart = require("../models/cart");
+const Order = require("../models/order");
 const Product = require("../models/product");
 
 exports.addToCart = async (req, res) => {
@@ -42,7 +43,6 @@ exports.addToCart = async (req, res) => {
     }
     return res.status(200).json({ success: "Added to cart", cart });
   } catch (error) {
-    console.log(error);
     res
       .status(500)
       .json({ error: "Server has occured some problem, please try again" });
@@ -98,7 +98,6 @@ exports.updateCart = async (req, res) => {
       .status(200)
       .json({ success: true, message: "Cart Updated", cart });
   } catch (error) {
-    console.log(error);
     res
       .status(500)
       .json({ error: "Server has occured some problem, please try again" });
@@ -114,7 +113,6 @@ exports.getUserSpecificCartItems = async (req, res) => {
       return res.status(200).json({ message: "Cart is empty" });
     }
   } catch (error) {
-    console.log(error);
     res
       .status(500)
       .json({ error: "Server has occured some problem, please try again" });
@@ -159,7 +157,6 @@ exports.removeCart = async (req, res) => {
       cart: checkCartItem,
     });
   } catch (error) {
-    console.log(error);
     res
       .status(500)
       .json({ error: "Server has occured some problem, please try again" });
@@ -168,9 +165,14 @@ exports.removeCart = async (req, res) => {
 
 exports.removeAllUserItem = async (req, res) => {
   try {
-    await Cart.findById(req.params.id).remove();
+    let cart = await Cart.find({ user: req.profile._id });
+    const orders = await Order.find({ user: req.profile._id });
 
-    res.status(200).json({ success: true });
+    if (cart.length > 0) {
+      await cart[0].remove();
+    }
+
+    res.status(200).json({ success: true, message: "Order Placed", orders });
   } catch (error) {
     res
       .status(500)

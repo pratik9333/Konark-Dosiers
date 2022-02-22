@@ -58,6 +58,21 @@ export const deleteCartItem = (userid, prodid, token) => {
     },
   })
     .then((response) => {
+      return response.json();
+    })
+    .catch((err) => console.log(err));
+};
+
+export const deleteAllCartItems = (userid, token) => {
+  return fetch(`${API}/cart/${userid}`, {
+    method: "DELETE",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((response) => {
       console.log(response);
       return response.json();
     })

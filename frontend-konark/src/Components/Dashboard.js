@@ -6,6 +6,7 @@ import Template from "../Components/Template";
 import { AppContext } from "../Context/AppContext";
 import { USER_INFO } from "../Context/action.types";
 import { useAlert } from "react-alert";
+import { checkPackExpiry } from "../api/Recharge";
 
 const Dashboard = () => {
   const { state, dispatch } = useContext(AppContext);
@@ -15,6 +16,13 @@ const Dashboard = () => {
 
   useEffect(() => {
     //get user info
+    checkPackExpiry(user._id, token)
+      .then((data) => {
+        console.log(data.success);
+      })
+      .catch((err) => {
+        alert.error("Cannot able to fetch user data");
+      });
     getUser(user._id, token)
       .then((data) => {
         if (!data.error) {

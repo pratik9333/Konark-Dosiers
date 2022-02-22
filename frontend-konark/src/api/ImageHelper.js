@@ -13,11 +13,11 @@ const Imagehelper = ({ product, where }) => {
         alt="photo"
         style={{
           maxHeight:
-            where === "order" || where === "difforder" ? "190px" : "250px",
+            where === "order" || where === "difforder" ? "140px" : "250px",
           maxWidth:
-            where === "order" || where === "difforder" ? "200px" : "80%",
+            where === "order" || where === "difforder" ? "130px" : "80%",
           minHeight:
-            where === "order" || where === "difforder" ? "130px" : "250px",
+            where === "order" || where === "difforder" ? "140px" : "250px",
           minWidth: where === "order" || where === "difforder" ? "130px" : "",
         }}
         className="mb-3 rounded"

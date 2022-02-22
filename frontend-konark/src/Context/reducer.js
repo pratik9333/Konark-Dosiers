@@ -4,6 +4,7 @@ import {
   USER_INFO,
   ADD_CART,
   UPDATE_CART,
+  ORDER_DETAILS,
 } from "./action.types";
 
 export const initialState = {
@@ -11,6 +12,7 @@ export const initialState = {
   packs: [],
   user: {},
   cart: {},
+  orderDetails: [],
 };
 
 export const reducer = (state, action) => {
@@ -40,5 +42,18 @@ export const reducer = (state, action) => {
         ...state,
         cart: action.payload,
       };
+
+    case ORDER_DETAILS:
+      if (action.payload === null) {
+        return {
+          ...state,
+          orderDetails: [],
+        };
+      } else {
+        return {
+          ...state,
+          orderDetails: action.payload,
+        };
+      }
   }
 };

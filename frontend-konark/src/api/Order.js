@@ -13,9 +13,7 @@ export const createOrder = async (userid, token, order) => {
     .then((response) => {
       return response.json();
     })
-    .catch((err) => {
-      console.log(err);
-    });
+    .catch((err) => {});
 };
 
 export const getUserOrders = async (userid, token) => {
@@ -30,9 +28,7 @@ export const getUserOrders = async (userid, token) => {
     .then((response) => {
       return response.json();
     })
-    .catch((err) => {
-      console.log(err);
-    });
+    .catch((err) => {});
 };
 
 export const payment = async (amount, id, token) => {
@@ -49,13 +45,10 @@ export const payment = async (amount, id, token) => {
     .then((response) => {
       return response.json();
     })
-    .catch((err) => {
-      console.log(err);
-    });
+    .catch((err) => {});
 };
 
 export const successpayment = async (data, id) => {
-  console.log(data);
   return fetch(`${API}/payment/success/${id}`, {
     method: "POST",
     headers: {
@@ -67,7 +60,5 @@ export const successpayment = async (data, id) => {
     .then((response) => {
       return response.json();
     })
-    .catch((err) => {
-      console.log(err);
-    });
+    .catch((err) => {});
 };

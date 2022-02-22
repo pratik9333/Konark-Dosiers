@@ -62,6 +62,7 @@ const App = () => {
         .catch((err) => {
           alert.error("Cannot able to fetch user data");
         });
+
       setCartItems();
     }
     //getAllPacks

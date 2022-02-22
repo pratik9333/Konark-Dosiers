@@ -13,40 +13,12 @@ import { AppContext } from "../Context/AppContext";
 import { AiOutlinePlusCircle, AiOutlineMinusCircle } from "react-icons/ai";
 import { BiRupee } from "react-icons/bi";
 import { deleteCartItem, updateCartItem } from "../api/cart";
-import { ADD_CART } from "../Context/action.types";
+import { ADD_CART, ORDER_DETAILS } from "../Context/action.types";
 
 const Order = (props) => {
   const { user } = isAuthenticated();
   const [flag, setflag] = useState(true);
   const [progress, setProgress] = useState(0);
-  const [Products, setProducts] = useState();
-  let alert = useAlert();
-  const { state, dispatch } = useContext(AppContext);
-
-  let history = useHistory();
-
-  let newConnectionProd = [];
-
-  useEffect(() => {
-    if (state.user.newUser && state.user.orders.length === 1) {
-      setTimeout(() => {
-        history.push("/");
-      }, 100);
-      return alert.info(
-        "Cannot purchase products before your first connection set up!"
-      );
-    }
-
-    window.scrollTo(1, 1);
-  }, []);
-
-  if (state.products && props.location.state) {
-    for (let prod of state.products) {
-      if (prod._id === props.location.state.productid) {
-        newConnectionProd.push(prod);
-      }
-    }
-  }
 
   //Authentication
   const userId = isAuthenticated() && isAuthenticated().user._id;
@@ -66,6 +38,45 @@ const Order = (props) => {
     user: userId,
     recharge: null,
   });
+  let alert = useAlert();
+  const { state, dispatch, setCartItems } = useContext(AppContext);
+
+  let history = useHistory();
+
+  let newConnectionProd = [];
+  const prodids = [];
+
+  useEffect(() => {
+    if (state.user.newUser && state.user.orders.length === 1) {
+      setTimeout(() => {
+        history.push("/");
+      }, 100);
+      return alert.info(
+        "Cannot purchase products before your first connection set up!"
+      );
+    }
+
+    if (state.cart && Object.keys(state.cart).length === 0) {
+      setCartItems();
+    }
+    window.scrollTo(1, 1);
+  }, []);
+
+  if (state.products && props.location.state) {
+    for (let prod of state.products) {
+      if (prod._id === props.location.state.productid) {
+        newConnectionProd.push(prod);
+      }
+    }
+  }
+
+  if (!state.user.newUser && state.cart && state.cart.products) {
+    if (state.cart.products.length > 0) {
+      for (let cartItem of state.cart.products) {
+        prodids.push(cartItem._id);
+      }
+    }
+  }
 
   if (newConnectionProd.length > 0 && flag) {
     setOrderInfo({
@@ -103,7 +114,7 @@ const Order = (props) => {
         alert.success("Product was removed from cart");
       })
       .catch((data) => {
-        console.log(data);
+        //console.log(data);
       });
   };
 
@@ -157,6 +168,7 @@ const Order = (props) => {
       ) {
         return alert.error("Please fill in all the fields");
       }
+
       const res = await loadScript(
         "https://checkout.razorpay.com/v1/checkout.js"
       );
@@ -167,7 +179,11 @@ const Order = (props) => {
       }
 
       // creating a new order
-      let pay = await payment(order.amount * 100, userId, token);
+      let pay = await payment(
+        state.cart ? state.cart.cartTotal * 100 : order.amount * 100,
+        userId,
+        token
+      );
 
       // Getting the order details back
       const { amount, id: order_id, currency } = pay;
@@ -194,8 +210,8 @@ const Order = (props) => {
             `${API}/order/create/${userId}`,
             {
               address: order.address,
-              amount: order.amount,
-              product: order.product,
+              amount: state.cart ? state.cart.cartTotal : order.amount,
+              product: state.cart ? prodids : order.product,
               user: order.user,
               paymentId: res.data.paymentId,
               orderId: res.data.orderId,
@@ -208,14 +224,18 @@ const Order = (props) => {
             }
           );
           if (createOrder) {
+            dispatch({ type: ORDER_DETAILS, payload: createOrder.data.orders });
+            dispatch({ type: ADD_CART, payload: null });
             history.push("/confirmation");
+          } else {
+            alert.error("Order failed, please try again");
           }
         },
 
         prefill: {
-          name: "Soumya Dey",
-          email: "SoumyaDey@example.com",
-          contact: "9999999999",
+          name: state.user.name,
+          email: state.user.email,
+          contact: state.user.phone,
         },
         notes: {
           address: "Soumya Dey Corporate Office",
@@ -228,13 +248,15 @@ const Order = (props) => {
       const paymentObject = new window.Razorpay(options);
       paymentObject.open();
     } catch (error) {
-      alert("Order Failed");
+      console.log(error);
+      alert.error("Order Failed");
     }
   }
 
   return (
     <div>
-      {newConnectionProd.length > 0 || state.cart ? (
+      {newConnectionProd.length > 0 ||
+      (state.cart !== null && state.cart.products) ? (
         <div className="page-wrapper">
           <Breadcumb what="Checkout" to="Checkout" />
           <div className="checkout shopping">
@@ -244,9 +266,9 @@ const Order = (props) => {
                   <div className="product-checkout-details">
                     <div className="block">
                       <h4 className="widget-title">
-                        {state.cart.products ? "Cart Items" : "Product Details"}
+                        {state.cart !== null ? "Cart Items" : "Product Details"}
                       </h4>
-                      {state.user.newUser && state.user.orders.length === 0 ? (
+                      {state.user.newUser ? (
                         <div
                           className="media product-card d-flex align-items-baseline"
                           style={{ display: "flex", alignItems: "center" }}
@@ -311,7 +333,7 @@ const Order = (props) => {
                           </div>
                         </div>
                       )}
-                      {!state.user.newUser && state.cart.products
+                      {state.user.newUser === false && state.cart.products
                         ? state.cart.products.map((prod) => (
                             <>
                               <div
@@ -328,6 +350,7 @@ const Order = (props) => {
                                     style={{
                                       display: "flex",
                                       alignItems: "center",
+                                      flexDirection: "column",
                                     }}
                                   >
                                     <Imagehelper product={prod} where="order" />
@@ -343,7 +366,6 @@ const Order = (props) => {
                                   <p
                                     style={{
                                       display: "block",
-                                      marginLeft: "60px",
                                       color: "red",
                                       cursor: "pointer",
                                     }}
@@ -453,10 +475,8 @@ const Order = (props) => {
                           <span>Shipping:</span>
                           <span>Free</span>
                         </li>
-                        {state.user.newUser &&
-                        state.user.orders.length === 0 ? (
+                        {state.user && state.user.newUser ? (
                           <>
-                            {" "}
                             <li>
                               <span>Recharge Pack Price:</span>
                               <span>
@@ -471,30 +491,32 @@ const Order = (props) => {
                               <span>DTH BOX Price:</span>
                               <span>RS. {newConnectionProd[0].price}</span>
                             </li>{" "}
+                            <li>
+                              <span>Subtotal:</span>
+                              <span className="price">
+                                RS{" "}
+                                {state.user.newUser &&
+                                newConnectionProd.length > 0
+                                  ? newConnectionProd[0].rechargePlans[0]
+                                      .packprice + newConnectionProd[0].price
+                                  : ""}
+                                {state.cart ? state.cart.cartTotal : ""}
+                              </span>
+                            </li>
                           </>
                         ) : (
                           ""
                         )}
-                        <li>
-                          <span>Subtotal:</span>
-                          <span className="price">
-                            RS{" "}
-                            {state.user.newUser &&
-                            state.user.orders.length === 0
-                              ? newConnectionProd[0].rechargePlans[0]
-                                  .packprice + newConnectionProd[0].price
-                              : state.cart.cartTotal}
-                          </span>
-                        </li>
                       </ul>
                       <div className="summary-total">
                         <span>Total</span>
                         <span>
                           RS.{" "}
-                          {state.user.newUser && state.user.orders.length === 0
+                          {state.user.newUser && newConnectionProd.length > 0
                             ? newConnectionProd[0].rechargePlans[0].packprice +
                               newConnectionProd[0].price
-                            : state.cart.cartTotal}
+                            : ""}
+                          {state.cart ? state.cart.cartTotal : ""}
                         </span>
                       </div>
                     </div>
@@ -552,7 +574,11 @@ const Order = (props) => {
                         />
                       </div>
                       <button
-                        onClick={displayRazorpay}
+                        onClick={() => {
+                          state.cart
+                            ? displayRazorpay(true)
+                            : displayRazorpay(false);
+                        }}
                         type="button"
                         className="btn btn-dark"
                       >

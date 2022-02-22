@@ -8,7 +8,7 @@ exports.getOrderById = (req, res, next, id) => {
     .populate("product", "name price")
     .exec((err, order) => {
       if (err) {
-        res.json(400).json({
+        res.status(400).json({
           error: "No Order Found In DB",
         });
       }
@@ -64,9 +64,8 @@ exports.getUserOrders = async (req, res) => {
       return res.status(200).json({ success: true, orders });
     }
 
-    return res.status(200).json({ success: true, message: "No orders found" });
+    return res.status(403).json({ success: false, message: "No orders found" });
   } catch (error) {
-    console.log(error);
     return res.status(500).json({ error: "Server error" });
   }
 };
@@ -94,9 +93,9 @@ exports.updateStatus = async (req, res) => {
 
         const startDate = new Date(Date.now());
         let endDateMoment = moment(startDate);
-        endDateMoment.add(val, "months").format("Do MMMM YYYY");
+        endDateMoment.add(val, "months");
 
-        user.activePack.expiresAt = endDateMoment.format("Do MMMM YYYY");
+        user.activePack.expiresAt = endDateMoment.format("YYYY-MM-DD");
         user.newUser = false;
         await user.save();
       }
@@ -104,7 +103,6 @@ exports.updateStatus = async (req, res) => {
 
     return res.status(200).json({ message: "Order updated" });
   } catch (error) {
-    console.log(error);
     return res.status(200).json({ error: "Server Error" });
   }
 };

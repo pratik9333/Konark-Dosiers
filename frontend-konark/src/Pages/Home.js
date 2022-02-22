@@ -17,7 +17,7 @@ const Home = () => {
   let history = useHistory();
   const alert = useAlert();
 
-  console.log(state.cart);
+  console.log(state);
 
   const showToast = (data) => {
     if (!isAuthenticated()) {
@@ -32,11 +32,11 @@ const Home = () => {
         );
       }
       if (state.user.newUser) {
-        return alert.error(
+        return alert.info(
           "Cannot purchase items before having new connection!"
         );
       }
-      if (!state.user.newUser && state.user.orders.length === 1) {
+      if (state.user.newUser === false && state.user.orders.length > 0) {
         addCart(user._id, data, token)
           .then((data) => {
             if (data.error) {

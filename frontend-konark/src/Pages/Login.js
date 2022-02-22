@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { useAlert } from "react-alert";
 import { Link, Redirect } from "react-router-dom";
 import { isAuthenticated, authenticate, signin } from "../api/Auth";
-
 import logo from "../Images/logo.png";
 
 const Login = () => {
@@ -14,6 +14,8 @@ const Login = () => {
 
   const { email, password, error, didRedirect } = values;
   const { user } = isAuthenticated();
+
+  let alert = useAlert();
 
   useEffect(() => {
     window.scrollTo(1, 1);
@@ -38,12 +40,11 @@ const Login = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(1);
     setValues({ ...values, error: false, Redirect: false });
     signin({ email, password })
       .then((data) => {
         if (data.error) {
-          setValues({ ...values, error: data.error });
+          alert.error(data.error);
         } else {
           authenticate(data, () => {
             setValues({

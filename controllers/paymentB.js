@@ -59,7 +59,6 @@ exports.successrazorpay = (req, res) => {
       paymentId: razorpayPaymentId,
     });
   } catch (error) {
-    console.log(error);
     res.status(500).send(error);
   }
 };

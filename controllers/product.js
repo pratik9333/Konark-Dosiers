@@ -56,7 +56,6 @@ exports.createProduct = (req, res) => {
     // Save to DB
     product.save((err, product) => {
       if (err) {
-        console.log(err);
         return res.status(400).json({
           error: "Saving DTH BOX in DB failed",
         });
@@ -126,7 +125,6 @@ exports.updateProduct = (req, res) => {
     // Save to DB
     product.save((err, product) => {
       if (err) {
-        console.log(err);
         return res.status(400).json({
           error: "Updation of product in DB failed",
         });

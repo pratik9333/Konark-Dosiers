@@ -8,6 +8,7 @@ const {
 } = require("../controllers/user");
 const { isSignedIn, isAuthenticated, isAdmin } = require("../controllers/auth");
 const { updateStock, getProductById } = require("../controllers/product");
+const { removeAllUserItem } = require("../controllers/cart");
 
 const {
   getOrderById,
@@ -35,7 +36,8 @@ router.post(
   pushOrderInPurchaseList,
   updateStock,
   createOrder,
-  addToActivePack
+  addToActivePack,
+  removeAllUserItem
 );
 
 //read

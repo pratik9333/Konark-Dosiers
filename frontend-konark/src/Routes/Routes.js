@@ -20,7 +20,7 @@ import { Header } from "../Components/Header";
 import { Footer } from "../Components/Footer";
 import Dashboard from "../Components/Dashboard";
 import Orders from "../Components/Orders";
-import Address from "../Components/Address";
+import PackDetail from "../Components/PackDetail";
 import Profile from "../Components/Profile";
 import LoadingBar from "react-top-loading-bar";
 
@@ -53,7 +53,7 @@ export const Routes = () => {
                 component={Dashboard}
               />
               <PrivateRoutes path="/orders" exact component={Orders} />
-              <PrivateRoutes path="/address" exact component={Address} />
+              <PrivateRoutes path="/packdetails" exact component={PackDetail} />
               <PrivateRoutes path="/userprofile" exact component={Profile} />
 
               <PrivateRoutes

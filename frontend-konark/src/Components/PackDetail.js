@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import { useHistory } from "react-router";
 
-import Template from "../Components/Template";
+import Template from "./Template";
 import { AppContext } from "../Context/AppContext";
 
-const Address = () => {
-  const { state, dispatch } = useContext(AppContext);
+const PackDetail = () => {
+  const { state } = useContext(AppContext);
   let userPack;
   let history = useHistory();
 
@@ -15,7 +15,8 @@ const Address = () => {
     }
   }, []);
 
-  if (state.packs && state.user.activePack) {
+  if (state.user.activePack && state.user.activePack.expiresAt !== null) {
+    console.log(1);
     userPack = state.packs.filter(
       (pack) => pack._id == state.user.activePack.recharge
     );
@@ -66,4 +67,4 @@ const Address = () => {
   );
 };
 
-export default Address;
+export default PackDetail;

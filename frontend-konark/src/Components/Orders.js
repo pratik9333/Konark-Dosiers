@@ -1,33 +1,37 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { isAuthenticated } from "../api/Auth";
 import Template from "../Components/Template";
 import { getUserOrders } from "../api/Order";
+import { AppContext } from "../Context/AppContext";
+import { ORDER_DETAILS } from "../Context/action.types";
 
 const Orders = () => {
   const { user, token } = isAuthenticated();
-
-  const [Orders, setOrders] = useState();
+  const { state, dispatch } = useContext(AppContext);
 
   useEffect(() => {
-    getUserOrders(user._id, token)
-      .then((data) => {
-        console.log(data);
-        if (!data.error) {
-          setOrders(data.orders);
-        }
-        if (data.message) {
-          setOrders(false);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (state.orderDetails && state.orderDetails.length === 0) {
+      getUserOrders(user._id, token)
+        .then((data) => {
+          if (data.success) {
+            dispatch({ type: ORDER_DETAILS, payload: data.orders });
+          }
+          if (!data.success) {
+            dispatch({ type: ORDER_DETAILS, payload: null });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   }, []);
+
+  console.log(state);
 
   return (
     <>
       <Template active="orders" />
-      {Orders !== false ? (
+      {state.orderDetails && state.orderDetails.length > 0 ? (
         <div className="container">
           <div className="row">
             <div className="col-md-12">
@@ -45,8 +49,8 @@ const Orders = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {Orders ? (
-                        Orders.map((order) => (
+                      {state.orderDetails.length !== 0 ? (
+                        state.orderDetails.map((order) => (
                           <tr>
                             <td>{order.order_id}</td>
                             <td>{order.transaction_id}</td>

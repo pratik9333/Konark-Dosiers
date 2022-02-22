@@ -27,7 +27,6 @@ exports.createPack = (req, res) => {
 
   recharge.save((err, rechargeinfo) => {
     if (err) {
-      console.log(err);
       return res.status(400).json({
         err: "NOT able to save Recharge Pack in DB",
       });
@@ -93,14 +92,21 @@ exports.checkPackExpiry = async (req, res) => {
       const startDate = new Date(Date.now());
       let currentDate = moment(startDate);
 
-      if (currentDate.format("Do MMMM YYYY") > user.activePack.expiresAt) {
-        user.activePack = undefined;
-      }
+      console.log(
+        moment(currentDate.format("YY-MMMM YYYY")).isAfter(
+          user.activePack.expiresAt
+        )
+      );
+
+      // if (currentDate.format("Do MMMM YYYY") > user.activePack.expiresAt) {
+      //   console.log(1);
+      //   user.activePack.expiresAt = null;
+      //   user.activePack.recharge = null;
+      // }
       await user.save();
     }
     return res.status(200).json({ success: true });
   } catch (error) {
-    console.log(error);
     return res
       .status(500)
       .json({ error: "Server has occured has problem, please try again" });
