@@ -156,8 +156,22 @@ exports.getAllProducts = (req, res) => {
 
 exports.updateStock = async (req, res, next) => {
   const products = req.body.product;
-  for (let id of products) {
-    await Product.findByIdAndUpdate(id, { $inc: { stock: -1, sold: +1 } });
+  try {
+    if (req.profile.activePack.recharge && req.body.recharge) {
+      return res
+        .status(400)
+        .json({ error: "User has already purchased new connection" });
+    }
+    for (let product of products) {
+      await Product.findByIdAndUpdate(product.product, {
+        $inc: { stock: -1, sold: +1 },
+      });
+    }
+    next();
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ error: "Server has occured some problem, please try again" });
   }
-  next();
 };

@@ -1,7 +1,10 @@
 const Order = require("../models/order");
 const Recharge = require("../models/recharge");
 const User = require("../models/user");
+const path = require("path");
+const puppeteer = require("puppeteer");
 const moment = require("moment");
+const { packRemainder } = require("../utils/scheduler");
 
 exports.getOrderById = (req, res, next, id) => {
   Order.findById(id)
@@ -18,7 +21,20 @@ exports.getOrderById = (req, res, next, id) => {
     });
 };
 
-exports.createOrder = (req, res, next) => {
+exports.cancelOrder = async (req) => {
+  try {
+    await Order.findByIdAndDelete(req.body.orderid);
+    if (req.body.recharge) {
+      const user = await User.findById(req.profile._id);
+      user.activePack = undefined;
+      await user.save();
+    }
+  } catch (error) {
+    return res.status(500).json({ error: "Server error" });
+  }
+};
+
+exports.createOrder = async (req, res, next) => {
   req.body.user = req.profile;
   const order_obj = {
     address: {
@@ -28,12 +44,14 @@ exports.createOrder = (req, res, next) => {
       Country: req.body.address.Country,
     },
     amount: req.body.amount,
-    product: req.body.product,
+    products: req.body.product,
     user: req.body.user,
     transaction_id: req.body.paymentId,
     order_id: req.body.orderId,
   };
+
   const order = new Order(order_obj);
+  req.body.orderid = order._id;
   order.save((err, order) => {
     if (err) {
       return res.status(400).json({
@@ -56,6 +74,52 @@ exports.getAllOrders = (req, res) => {
   });
 };
 
+exports.viewInvoice = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id).populate(
+      "user products.product"
+    );
+
+    if (order.products[0].product.rechargePlans.length > 0) {
+      let rechargePlans = await Recharge.findById(
+        order.products[0].product.rechargePlans[0]
+      );
+
+      //using order object to store pack information,
+      //as these properties it will not be used in page rendering
+      order.status = rechargePlans.packname;
+      order.user.phone = rechargePlans.packprice;
+    }
+
+    res.render("invoice", { order: order?.toJSON() });
+  } catch (error) {
+    return res.status(500).json({ error: "Server error" });
+  }
+};
+exports.downloadInvoice = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
+    const url = `${baseUrl}/api/order/view/${req.params.id}`;
+
+    const filePath = path.resolve(
+      __dirname,
+      `../public/Invoices/ORDER-${order._id}.pdf`
+    );
+
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+
+    await page.goto(url, { waitUntil: ["domcontentloaded", "networkidle0"] });
+    await page.pdf({ path: filePath, format: "a4", printBackground: true });
+    await browser.close();
+
+    res.download(filePath);
+  } catch (error) {
+    return res.status(500).json({ error: "Server error" });
+  }
+};
 exports.getUserOrders = async (req, res) => {
   try {
     const orders = await Order.find({ user: req.profile._id });
@@ -78,15 +142,14 @@ exports.updateStatus = async (req, res) => {
         status: req.body.status,
       },
       { new: true }
-    );
+    ).populate("products.product");
 
     if (order.status === "Delivered") {
       const user = await User.findById(order.user);
 
       if (
-        user.activePack !== undefined &&
-        user.activePack.expiresAt ===
-          "Subscription starts after product delivers"
+        user.activePack !== null &&
+        order.products[0].product.rechargePlans.length > 0
       ) {
         const rechargePack = await Recharge.findById(user.activePack.recharge);
         const val = rechargePack.validityMonth;
@@ -97,12 +160,16 @@ exports.updateStatus = async (req, res) => {
 
         user.activePack.expiresAt = endDateMoment.format("YYYY-MM-DD");
         user.newUser = false;
+
         await user.save();
+
+        await packRemainder(user);
       }
     }
 
     return res.status(200).json({ message: "Order updated" });
   } catch (error) {
+    console.log(error);
     return res.status(200).json({ error: "Server Error" });
   }
 };

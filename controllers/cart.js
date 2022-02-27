@@ -1,6 +1,7 @@
 const Cart = require("../models/cart");
 const Order = require("../models/order");
 const Product = require("../models/product");
+const { cancelOrder } = require("./order");
 
 exports.addToCart = async (req, res) => {
   try {
@@ -174,6 +175,7 @@ exports.removeAllUserItem = async (req, res) => {
 
     res.status(200).json({ success: true, message: "Order Placed", orders });
   } catch (error) {
+    await cancelOrder(req);
     res
       .status(500)
       .json({ error: "Server has occured some problem, please try again" });

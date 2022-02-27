@@ -2,6 +2,7 @@ const User = require("../models/user");
 const Order = require("../models/order");
 const Recharge = require("../models/recharge");
 const moment = require("moment");
+const { cancelOrder } = require("./order");
 
 exports.getUserById = (req, res, next, id) => {
   User.findById(id).exec((err, user) => {
@@ -22,7 +23,7 @@ exports.getUser = async (req, res) => {
   user.salt = undefined;
   user.__v = undefined;
   user.createdAt = undefined;
-  //eq.profile.orders = req.profile.orders.length;
+
   return res.json(user);
 };
 
@@ -141,51 +142,8 @@ exports.setNewPackForUser = async (req, res) => {
   }
 };
 
-exports.pushOrderInPurchaseList = async (req, res, next) => {
-  // Store this in DB
-
-  const currentUser = await User.findById(req.profile._id);
-
-  if (req.body.recharge) {
-    if (currentUser.newUser === false) {
-      return res.status(401).json({
-        error:
-          "User has already old connection, please contact your isp for more details",
-      });
-    }
-  }
-
-  const order_obj = {
-    address: {
-      fulladdress: req.body.address.fulladdress,
-      zipcode: req.body.address.zipcode,
-      city: req.body.address.city,
-      Country: req.body.address.Country,
-    },
-    amount: req.body.amount,
-    product: req.body.product,
-    transaction_id: req.body.paymentId,
-    order_id: req.body.orderId,
-  };
-
-  User.findOneAndUpdate(
-    { _id: req.profile._id },
-    { $push: { orders: order_obj } },
-    { new: true },
-    (err, purchases) => {
-      if (err) {
-        return res.status(400).json({
-          error: "Unable to save purchase list",
-        });
-      }
-      next();
-    }
-  );
-};
-
 exports.addToActivePack = async (req, res, next) => {
   // Store this in DB
-
   try {
     if (req.body.recharge) {
       await User.findByIdAndUpdate(req.profile._id, {
@@ -196,7 +154,7 @@ exports.addToActivePack = async (req, res, next) => {
 
     next();
   } catch (error) {
-    await Order.find({ user: req.profile._id }).remove();
+    await cancelOrder(req);
     return res
       .status(200)
       .json({ success: false, message: "Order failed to create" });

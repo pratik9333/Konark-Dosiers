@@ -18,7 +18,6 @@ import { ADD_CART, ORDER_DETAILS } from "../Context/action.types";
 const Order = (props) => {
   const { user } = isAuthenticated();
   const [flag, setflag] = useState(true);
-  const [progress, setProgress] = useState(0);
 
   //Authentication
   const userId = isAuthenticated() && isAuthenticated().user._id;
@@ -44,10 +43,12 @@ const Order = (props) => {
   let history = useHistory();
 
   let newConnectionProd = [];
-  const prodids = [];
+  const cartProducts = [];
+
+  console.log(state);
 
   useEffect(() => {
-    if (state.user.newUser && state.user.orders.length === 1) {
+    if (state.user.newUser && state.orderDetails.length == 1) {
       setTimeout(() => {
         history.push("/");
       }, 100);
@@ -55,6 +56,8 @@ const Order = (props) => {
         "Cannot purchase products before your first connection set up!"
       );
     }
+
+    console.log(1);
 
     if (state.cart && Object.keys(state.cart).length === 0) {
       setCartItems();
@@ -73,18 +76,29 @@ const Order = (props) => {
   if (!state.user.newUser && state.cart && state.cart.products) {
     if (state.cart.products.length > 0) {
       for (let cartItem of state.cart.products) {
-        prodids.push(cartItem._id);
+        cartProducts.push({
+          product: cartItem.product,
+          quantity: cartItem.quantity,
+          amount: cartItem.totalPrice,
+        });
       }
     }
   }
 
   if (newConnectionProd.length > 0 && flag) {
+    console.log(1);
     setOrderInfo({
       ...order,
       amount:
         newConnectionProd[0].rechargePlans[0].packprice +
         newConnectionProd[0].price,
-      product: [newConnectionProd[0]._id],
+      product: [
+        {
+          product: newConnectionProd[0]._id,
+          quantity: 1,
+          amount: newConnectionProd[0].price,
+        },
+      ],
       recharge:
         newConnectionProd[0].rechargePlans.length > 0
           ? newConnectionProd[0].rechargePlans[0]._id
@@ -206,39 +220,50 @@ const Order = (props) => {
             datas
           );
 
-          const createOrder = await axios.post(
-            `${API}/order/create/${userId}`,
-            {
-              address: order.address,
-              amount: state.cart ? state.cart.cartTotal : order.amount,
-              product: state.cart ? prodids : order.product,
-              user: order.user,
-              paymentId: res.data.paymentId,
-              orderId: res.data.orderId,
-              recharge: order.recharge,
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
+          axios
+            .post(
+              `${API}/order/create/${userId}`,
+              {
+                address: order.address,
+                amount: state.cart ? state.cart.cartTotal : order.amount,
+                product: state.cart ? cartProducts : order.product,
+                user: order.user,
+                paymentId: res.data.paymentId,
+                orderId: res.data.orderId,
+                recharge: order.recharge,
               },
-            }
-          );
-          if (createOrder) {
-            dispatch({ type: ORDER_DETAILS, payload: createOrder.data.orders });
-            dispatch({ type: ADD_CART, payload: null });
-            history.push("/confirmation");
-          } else {
-            alert.error("Order failed, please try again");
-          }
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            )
+            .then((response) => {
+              dispatch({
+                type: ORDER_DETAILS,
+                payload: response.data.orders,
+              });
+              dispatch({ type: ADD_CART, payload: null });
+              history.push({
+                pathname: "/confirmation",
+                state: { orderStatus: true },
+              });
+            })
+            .catch((error) => {
+              history.push({
+                pathname: "/confirmation",
+                state: { orderStatus: false },
+              });
+              return alert.error(
+                "Order failed, money will be refunded in few minutes"
+              );
+            });
         },
 
         prefill: {
           name: state.user.name,
           email: state.user.email,
           contact: state.user.phone,
-        },
-        notes: {
-          address: "Soumya Dey Corporate Office",
         },
         theme: {
           color: "#61dafb",
@@ -493,15 +518,7 @@ const Order = (props) => {
                             </li>{" "}
                             <li>
                               <span>Subtotal:</span>
-                              <span className="price">
-                                RS{" "}
-                                {state.user.newUser &&
-                                newConnectionProd.length > 0
-                                  ? newConnectionProd[0].rechargePlans[0]
-                                      .packprice + newConnectionProd[0].price
-                                  : ""}
-                                {state.cart ? state.cart.cartTotal : ""}
-                              </span>
+                              <span className="price">RS {order.amount}</span>
                             </li>
                           </>
                         ) : (
@@ -511,12 +528,10 @@ const Order = (props) => {
                       <div className="summary-total">
                         <span>Total</span>
                         <span>
-                          RS.{" "}
-                          {state.user.newUser && newConnectionProd.length > 0
-                            ? newConnectionProd[0].rechargePlans[0].packprice +
-                              newConnectionProd[0].price
-                            : ""}
-                          {state.cart ? state.cart.cartTotal : ""}
+                          RS.
+                          {state.user && state.user.newUser
+                            ? order.amount
+                            : state.cart.cartTotal}
                         </span>
                       </div>
                     </div>
@@ -575,9 +590,7 @@ const Order = (props) => {
                       </div>
                       <button
                         onClick={() => {
-                          state.cart
-                            ? displayRazorpay(true)
-                            : displayRazorpay(false);
+                          displayRazorpay();
                         }}
                         type="button"
                         className="btn btn-dark"

@@ -15,8 +15,7 @@ const PackDetail = () => {
     }
   }, []);
 
-  if (state.user.activePack && state.user.activePack.expiresAt !== null) {
-    console.log(1);
+  if (state.user.activePack) {
     userPack = state.packs.filter(
       (pack) => pack._id == state.user.activePack.recharge
     );
@@ -24,7 +23,6 @@ const PackDetail = () => {
     userPack = undefined;
   }
 
-  console.log(userPack);
   return (
     <>
       {state.user ? (
@@ -47,7 +45,11 @@ const PackDetail = () => {
                     <td>{userPack[0].packname}</td>
                     <td>Rs. {userPack[0].packprice}</td>
                     <td>{userPack[0].validityMonth} Month</td>
-                    <td>{state.user.activePack.expiresAt}</td>
+                    <td>
+                      {state.user.activePack.expiresAt !== null
+                        ? state.user.activePack.expiresAt
+                        : "Expired"}
+                    </td>
                     <td>{userPack[0].option}</td>
                   </tr>
                 </tbody>

@@ -12,6 +12,7 @@ import {
   SET_PACKS,
   USER_INFO,
   ADD_CART,
+  LOADING_BAR,
 } from "./Context/action.types";
 import { reducer, initialState } from "./Context/reducer";
 import { isAuthenticated } from "./api/Auth";

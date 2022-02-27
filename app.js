@@ -10,13 +10,39 @@ const rechargeRoutes = require("./routes/recharge");
 const orderRoutes = require("./routes/order");
 const productRoutes = require("./routes/product");
 const paymentBRoutes = require("./routes/paymentBRoutes");
+const path = require("path");
 const Cart = require("./routes/cart");
+const exphb = require("express-handlebars");
+const { scheduleAgainDueToServerDown } = require("./utils/scheduler");
 
 // Middle Wares
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+
+const myhbs = exphb.create({
+  helpers: {
+    notequal: function (a, b, options) {
+      return a != b ? options.fn(this) : options.inverse(this);
+    },
+    round: function (number) {
+      return Math.round(number) / 100;
+    },
+    date: function (dateString) {
+      const date = new Date(dateString);
+
+      return `${date.getMonth() + 1}/${
+        date.getDate() + 1
+      }/${date.getFullYear()}`;
+    },
+  },
+});
+
+app.engine("handlebars", myhbs.engine);
+app.set("view engine", "handlebars");
+app.use(express.static("views/images"));
+app.set("views", path.resolve(__dirname, "./views"));
 
 //Routes
 app.use("/api", authRoutes);
@@ -48,3 +74,5 @@ const port = process.env.PORT || 4000; // PORT
 app.listen(port, () => {
   console.log(`app is runnning at ${port}`);
 });
+
+scheduleAgainDueToServerDown();

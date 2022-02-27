@@ -3,10 +3,14 @@ const { ObjectId } = mongoose.Schema;
 
 const OrderSchema = new mongoose.Schema(
   {
-    product: [
+    products: [
       {
-        type: ObjectId,
-        ref: "Product",
+        product: {
+          type: ObjectId,
+          ref: "Product",
+        },
+        quantity: { type: Number },
+        amount: { type: Number },
       },
     ],
     order_id: { type: String },

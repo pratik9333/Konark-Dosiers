@@ -16,7 +16,7 @@ const BuyConnection = () => {
   const { redirect } = order;
 
   const handleProduct = (id) => {
-    if (!state.user.newUser || state.user.activePack) {
+    if (state.user.activePack) {
       return alert.info("You already had connection!");
     }
     setOrder({ ...order, productid: id, redirect: true });
@@ -27,6 +27,10 @@ const BuyConnection = () => {
       return <Redirect to={{ pathname: "/order", state: order }} />;
     }
   };
+
+  useEffect(() => {
+    window.scrollTo(1, 1);
+  }, []);
 
   return (
     <Fragment>

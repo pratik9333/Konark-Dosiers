@@ -1,11 +1,7 @@
 var express = require("express");
 var router = express.Router();
 
-const {
-  getUserById,
-  pushOrderInPurchaseList,
-  addToActivePack,
-} = require("../controllers/user");
+const { getUserById, addToActivePack } = require("../controllers/user");
 const { isSignedIn, isAuthenticated, isAdmin } = require("../controllers/auth");
 const { updateStock, getProductById } = require("../controllers/product");
 const { removeAllUserItem } = require("../controllers/cart");
@@ -16,6 +12,8 @@ const {
   getAllOrders,
   updateStatus,
   getUserOrders,
+  downloadInvoice,
+  viewInvoice,
 } = require("../controllers/order");
 
 //Params
@@ -33,7 +31,6 @@ router.post(
   "/order/create/:userId",
   isSignedIn,
   isAuthenticated,
-  pushOrderInPurchaseList,
   updateStock,
   createOrder,
   addToActivePack,
@@ -49,6 +46,11 @@ router.get(
   getAllOrders
 );
 
+//view order invoice
+router.get("/order/view/:id", viewInvoice);
+
+//download order invoice
+router.get("/order/download/:id", downloadInvoice);
 router.put(
   "/order/:orderId/status/:userId",
   isSignedIn,

@@ -38,7 +38,7 @@ const Dashboard = () => {
 
   return (
     <div class="dashboard-wrapper user-dashboard">
-      {state.user && state.user.orders ? (
+      {state.user ? (
         <>
           <Template active="dashboard" />
           <div class="total-order mt-40">
@@ -52,7 +52,7 @@ const Dashboard = () => {
                     <th>Last name</th>
                     <th>Email</th>
                     <th>Phone</th>
-                    <th>Orders</th>
+                    <th>Role</th>
                     <th>Plan Activated ?</th>
                     <th></th>
                   </tr>
@@ -71,13 +71,7 @@ const Dashboard = () => {
                     <td>
                       <span>{state.user.phone}</span>
                     </td>
-                    <td>
-                      <span>
-                        {state.user.orders.length <= 0
-                          ? "No Orders"
-                          : state.user.orders.length}
-                      </span>
-                    </td>
+                    <td>{state.user.role}</td>
                     <td>
                       <span>
                         {state.user.activePack ? "Yes" : "No Plan activated"}

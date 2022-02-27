@@ -5,6 +5,7 @@ import {
   ADD_CART,
   UPDATE_CART,
   ORDER_DETAILS,
+  LOADING_BAR,
 } from "./action.types";
 
 export const initialState = {

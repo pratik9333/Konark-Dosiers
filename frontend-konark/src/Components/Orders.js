@@ -1,32 +1,30 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import { isAuthenticated } from "../api/Auth";
 import Template from "../Components/Template";
 import { getUserOrders } from "../api/Order";
 import { AppContext } from "../Context/AppContext";
 import { ORDER_DETAILS } from "../Context/action.types";
+import API from "../backend";
 
 const Orders = () => {
   const { user, token } = isAuthenticated();
+
   const { state, dispatch } = useContext(AppContext);
 
   useEffect(() => {
-    if (state.orderDetails && state.orderDetails.length === 0) {
-      getUserOrders(user._id, token)
-        .then((data) => {
-          if (data.success) {
-            dispatch({ type: ORDER_DETAILS, payload: data.orders });
-          }
-          if (!data.success) {
-            dispatch({ type: ORDER_DETAILS, payload: null });
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
+    getUserOrders(user._id, token)
+      .then((data) => {
+        if (data.success) {
+          dispatch({ type: ORDER_DETAILS, payload: data.orders });
+        }
+        if (!data.success) {
+          dispatch({ type: ORDER_DETAILS, payload: null });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
-
-  console.log(state);
 
   return (
     <>
@@ -55,7 +53,7 @@ const Orders = () => {
                             <td>{order.order_id}</td>
                             <td>{order.transaction_id}</td>
                             <td>{order.createdAt.split("T")[0]}</td>
-                            <td>{order.product.length}</td>
+                            <td>{order.products.length}</td>
                             <td>Rs. {order.amount}</td>
                             <td>
                               <span className="label label-primary">
@@ -67,8 +65,29 @@ const Orders = () => {
                                 data-bs-toggle="modal"
                                 data-bs-target="#exampleModal"
                                 className="btn btn-default"
+                                onClick={() => {
+                                  window.open(
+                                    `${API}/order/view/${order._id}`,
+                                    "_blank"
+                                  );
+                                }}
                               >
                                 View More Details
+                              </button>
+                            </td>
+                            <td>
+                              <button
+                                data-bs-toggle="modal"
+                                data-bs-target="#exampleModal"
+                                className="btn btn-default"
+                                onClick={() => {
+                                  window.open(
+                                    `${API}/order/download/${order._id}`,
+                                    "_blank"
+                                  );
+                                }}
+                              >
+                                Download Invoice
                               </button>
                             </td>
                           </tr>
@@ -84,7 +103,7 @@ const Orders = () => {
           </div>
         </div>
       ) : (
-        <h2 className="text-center">No Orders found !</h2>
+        <h2 className="text-center">No Orders Found!</h2>
       )}
     </>
   );

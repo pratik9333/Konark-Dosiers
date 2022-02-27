@@ -22,7 +22,6 @@ import Dashboard from "../Components/Dashboard";
 import Orders from "../Components/Orders";
 import PackDetail from "../Components/PackDetail";
 import Profile from "../Components/Profile";
-import LoadingBar from "react-top-loading-bar";
 
 //PrivateRoute
 import PrivateRoutes from "../Routes/PrivateRoutes";
@@ -30,7 +29,6 @@ import PrivateRoutes from "../Routes/PrivateRoutes";
 //AdminRoute
 import AdminRoutes from "../Routes/AdminRoutes";
 import { AppContext } from "../Context/AppContext";
-import { LOADING_BAR } from "../Context/action.types";
 
 export const Routes = () => {
   const { state, dispatch } = useContext(AppContext);

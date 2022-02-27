@@ -26,7 +26,7 @@ const Home = () => {
       if (data === "new") {
         return history.push("/newconnection");
       }
-      if (state.user.newUser && state.user.orders.length === 1) {
+      if (state.user.newUser && state.user.activePack) {
         return alert.info(
           "Cannot purchase products before your first connection set up!"
         );
@@ -36,7 +36,7 @@ const Home = () => {
           "Cannot purchase items before having new connection!"
         );
       }
-      if (state.user.newUser === false && state.user.orders.length > 0) {
+      if (state.user.newUser === false) {
         addCart(user._id, data, token)
           .then((data) => {
             if (data.error) {
