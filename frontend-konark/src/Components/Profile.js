@@ -8,21 +8,19 @@ const { user } = isAuthenticated();
 const Profile = () => {
   const [User, setUser] = useState([]);
 
-  console.log(User);
-
   useEffect(() => {
     setUser(user);
   }, []);
   return (
     <>
       <Template active="profile" />
-      <div class="container">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="dashboard-wrapper dashboard-user-profile">
-              <div class="media">
-                <div class="media-body">
-                  <ul class="user-profile-list">
+      <div className="container">
+        <div className="row">
+          <div className="col-md-12">
+            <div className="dashboard-wrapper dashboard-user-profile">
+              <div className="media">
+                <div className="media-body">
+                  <ul className="user-profile-list">
                     <li>
                       <span>Full Name:</span> {User ? User.firstname : ""}{" "}
                       {User ? User.lastname : ""}

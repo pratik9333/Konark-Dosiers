@@ -3,6 +3,7 @@ import { useAlert } from "react-alert";
 import { Link, Redirect } from "react-router-dom";
 import { isAuthenticated, authenticate, signin } from "../api/Auth";
 import logo from "../Images/logo.png";
+import { Spinner } from "react-spinners-css";
 
 const Login = () => {
   const [values, setValues] = useState({
@@ -11,6 +12,8 @@ const Login = () => {
     error: "",
     didRedirect: false,
   });
+
+  const [loading, setloading] = useState(false);
 
   const { email, password, error, didRedirect } = values;
   const { user } = isAuthenticated();
@@ -39,13 +42,16 @@ const Login = () => {
   };
 
   const handleSubmit = (event) => {
+    setloading(!loading);
     event.preventDefault();
     setValues({ ...values, error: false, Redirect: false });
     signin({ email, password })
       .then((data) => {
         if (data.error) {
           alert.error(data.error);
+          setloading(false);
         } else {
+          setloading(false);
           authenticate(data, () => {
             setValues({
               ...values,
@@ -60,8 +66,18 @@ const Login = () => {
       .catch((err) => console.log(err));
   };
 
+  const fadePage = {
+    opacity: "0.6",
+  };
+  const unFadePage = {
+    opacity: "1",
+  };
+
   return (
-    <section className="signin-page account">
+    <section
+      className="signin-page account"
+      style={loading ? fadePage : unFadePage}
+    >
       {performRedirect()}
       <div className="container">
         <div className="row">
@@ -71,6 +87,17 @@ const Login = () => {
                 <img src={logo} alt="" />
               </Link>
               <h2 className="text-center">Welcome Back</h2>
+              <span
+                style={{
+                  display: loading ? "flex" : "none",
+                  justifyContent: "center",
+                  position: "absolute",
+                  left: "0",
+                  right: "0",
+                }}
+              >
+                <Spinner color="#000" size={50} />
+              </span>
               <form className="text-left clearfix">
                 <div className="form-group">
                   <input
@@ -100,10 +127,6 @@ const Login = () => {
                   </button>
                 </div>
               </form>
-
-              <p>
-                <Link> Forgot your password?</Link>
-              </p>
             </div>
           </div>
         </div>

@@ -8,7 +8,7 @@ import logo from "../Images/logo.png";
 import headerimg from "../Images/shop/header-img.jpg";
 
 export const Header = () => {
-  const { state, dispatch } = useContext(AppContext);
+  const { state } = useContext(AppContext);
 
   return (
     <Fragment>
@@ -184,9 +184,15 @@ export const Header = () => {
                   <ul className="dropdown-menu">
                     {state.packs.length > 0
                       ? state.packs.map((pack) => (
-                          <li>
+                          <li key={pack._id}>
                             <Link
-                              to={{ pathname: "/packs", state: state.packs }}
+                              to={{
+                                pathname: "/packs",
+                                state: {
+                                  packs: state.packs,
+                                  selectedPack: pack,
+                                },
+                              }}
                             >
                               {pack.packname}
                             </Link>

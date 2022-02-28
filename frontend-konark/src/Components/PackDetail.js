@@ -29,8 +29,8 @@ const PackDetail = () => {
         <>
           <Template active="address" />
           {userPack ? (
-            <div class="table-responsive">
-              <table class="table">
+            <div className="table-responsive">
+              <table className="table">
                 <thead>
                   <tr>
                     <th>Pack Name</th>

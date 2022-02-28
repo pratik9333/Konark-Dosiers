@@ -14,10 +14,12 @@ import { AiOutlinePlusCircle, AiOutlineMinusCircle } from "react-icons/ai";
 import { BiRupee } from "react-icons/bi";
 import { deleteCartItem, updateCartItem } from "../api/cart";
 import { ADD_CART, ORDER_DETAILS } from "../Context/action.types";
+import { Spinner } from "react-spinners-css";
 
 const Order = (props) => {
   const { user } = isAuthenticated();
   const [flag, setflag] = useState(true);
+  const [loading, setloading] = useState(false);
 
   //Authentication
   const userId = isAuthenticated() && isAuthenticated().user._id;
@@ -45,8 +47,6 @@ const Order = (props) => {
   let newConnectionProd = [];
   const cartProducts = [];
 
-  console.log(state);
-
   useEffect(() => {
     if (state.user.newUser && state.orderDetails.length == 1) {
       setTimeout(() => {
@@ -56,8 +56,6 @@ const Order = (props) => {
         "Cannot purchase products before your first connection set up!"
       );
     }
-
-    console.log(1);
 
     if (state.cart && Object.keys(state.cart).length === 0) {
       setCartItems();
@@ -86,7 +84,6 @@ const Order = (props) => {
   }
 
   if (newConnectionProd.length > 0 && flag) {
-    console.log(1);
     setOrderInfo({
       ...order,
       amount:
@@ -115,8 +112,10 @@ const Order = (props) => {
   };
 
   const removeCartItem = (id) => {
+    setloading(!loading);
     deleteCartItem(user._id, id, token)
       .then((data) => {
+        setloading(false);
         if (data.error) {
           return alert.error("Product cannot be removed");
         }
@@ -128,32 +127,39 @@ const Order = (props) => {
         alert.success("Product was removed from cart");
       })
       .catch((data) => {
-        //console.log(data);
+        setloading(false);
+        return alert.error("Product cannot be removed");
       });
   };
 
   const updateCart = (action, data) => {
     if (action === "incr") {
+      setloading(!loading);
       updateCartItem(user._id, data, token, { incr: true, decr: false })
         .then((data) => {
+          setloading(false);
           if (data.error) {
             return alert.error("Product cannot be updated");
           }
           dispatch({ type: ADD_CART, payload: data.cart });
         })
         .catch((data) => {
-          console.log(data);
+          setloading(false);
+          return alert.error("Product cannot be updated");
         });
     } else {
+      setloading(!loading);
       updateCartItem(user._id, data, token, { incr: false, decr: true })
         .then((data) => {
+          setloading(false);
           if (data.message === "Quantity cannot be decreased") {
             return alert.error("Product cannot be updated");
           }
           dispatch({ type: ADD_CART, payload: data.cart });
         })
         .catch((data) => {
-          console.log(data);
+          setloading(false);
+          return alert.error("Product cannot be updated");
         });
     }
   };
@@ -220,6 +226,8 @@ const Order = (props) => {
             datas
           );
 
+          setloading(!loading);
+
           axios
             .post(
               `${API}/order/create/${userId}`,
@@ -239,6 +247,7 @@ const Order = (props) => {
               }
             )
             .then((response) => {
+              setloading(false);
               dispatch({
                 type: ORDER_DETAILS,
                 payload: response.data.orders,
@@ -250,6 +259,7 @@ const Order = (props) => {
               });
             })
             .catch((error) => {
+              setloading(false);
               history.push({
                 pathname: "/confirmation",
                 state: { orderStatus: false },
@@ -278,11 +288,18 @@ const Order = (props) => {
     }
   }
 
+  const fadePage = {
+    opacity: "0.8",
+  };
+  const unFadePage = {
+    opacity: "1",
+  };
+
   return (
     <div>
       {newConnectionProd.length > 0 ||
       (state.cart !== null && state.cart.products) ? (
-        <div className="page-wrapper">
+        <div className="page-wrapper" style={loading ? fadePage : unFadePage}>
           <Breadcumb what="Checkout" to="Checkout" />
           <div className="checkout shopping">
             <div className="container">
@@ -474,6 +491,18 @@ const Order = (props) => {
                         : ""}
 
                       <h4 className="mt-40 mb-40 pb-40">Order Summary</h4>
+
+                      <span
+                        style={{
+                          display: loading ? "flex" : "none",
+                          justifyContent: "center",
+                          position: "absolute",
+                          left: "0",
+                          right: "0",
+                        }}
+                      >
+                        <Spinner color="#000" size={50} />
+                      </span>
 
                       <div className="discount-code mt-40">
                         <p

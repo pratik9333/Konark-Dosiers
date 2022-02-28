@@ -117,7 +117,7 @@ exports.setNewPackForUser = async (req, res) => {
     }
     if (user.activePack.expiresAt !== null) {
       return res
-        .status(401)
+        .status(400)
         .json({ error: "Your current pack is still active" });
     }
 
@@ -127,7 +127,7 @@ exports.setNewPackForUser = async (req, res) => {
 
     await User.findByIdAndUpdate(req.profile._id, {
       "activePack.recharge": req.params.packId,
-      "activePack.expiresAt": endDateMoment.format("Do MMMM YYYY"),
+      "activePack.expiresAt": endDateMoment.format("YYYY-MM-DD"),
     });
 
     return res.status(200).json({

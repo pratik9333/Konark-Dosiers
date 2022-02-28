@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { isAuthenticated } from "../api/Auth";
 import { getUser } from "../api/User";
 
@@ -7,10 +7,12 @@ import { AppContext } from "../Context/AppContext";
 import { USER_INFO } from "../Context/action.types";
 import { useAlert } from "react-alert";
 import { checkPackExpiry } from "../api/Recharge";
+import { Spinner } from "react-spinners-css";
 
 const Dashboard = () => {
   const { state, dispatch } = useContext(AppContext);
   let alert = useAlert();
+  const [flag, setflag] = useState(false);
 
   const { user, token } = isAuthenticated();
 
@@ -26,6 +28,7 @@ const Dashboard = () => {
     getUser(user._id, token)
       .then((data) => {
         if (!data.error) {
+          setflag(true);
           dispatch({ type: USER_INFO, payload: data });
         } else {
           alert.error("Cannot able to fetch user data");
@@ -37,15 +40,15 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div class="dashboard-wrapper user-dashboard">
-      {state.user ? (
-        <>
-          <Template active="dashboard" />
-          <div class="total-order mt-40">
+    <div className="dashboard-wrapper user-dashboard">
+      <>
+        <Template active="dashboard" />
+        {state.user && flag ? (
+          <div className="total-order mt-40">
             <h1 className="mb-20">Profile Information</h1>
             <hr />
-            <div class="table-responsive mt-40">
-              <table class="table">
+            <div className="table-responsive mt-40">
+              <table className="table">
                 <thead>
                   <tr>
                     <th>First name</th>
@@ -82,10 +85,12 @@ const Dashboard = () => {
               </table>
             </div>
           </div>
-        </>
-      ) : (
-        <h2>Loading</h2>
-      )}
+        ) : (
+          <span style={{ display: "flex", justifyContent: "center" }}>
+            <Spinner color="#000" size={50} />
+          </span>
+        )}
+      </>
     </div>
   );
 };

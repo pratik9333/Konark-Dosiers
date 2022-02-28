@@ -6,11 +6,11 @@ const Template = (props) => {
   return (
     <Fragment>
       <Breadcumb to="My Account" what="Dashboard" />
-      <section class="user-dashboard page-wrapper">
-        <div class="container">
-          <div class="row">
-            <div class="col-md-12">
-              <ul class="list-inline dashboard-menu text-center">
+      <section className="user-dashboard page-wrapper">
+        <div className="container">
+          <div className="row">
+            <div className="col-md-12">
+              <ul className="list-inline dashboard-menu text-center">
                 <li>
                   {props.active == "dashboard" ? (
                     <Link

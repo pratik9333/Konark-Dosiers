@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useLayoutEffect, useReducer } from "react";
+import React, { useEffect, useReducer } from "react";
 
 import { Routes } from "./Routes/Routes";
 import { AppContext } from "./Context/AppContext";
@@ -12,7 +12,6 @@ import {
   SET_PACKS,
   USER_INFO,
   ADD_CART,
-  LOADING_BAR,
 } from "./Context/action.types";
 import { reducer, initialState } from "./Context/reducer";
 import { isAuthenticated } from "./api/Auth";
@@ -25,7 +24,7 @@ const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   let alert = useAlert();
 
-  function setCartItems() {
+  const setCartItems = () => {
     if (isAuthenticated()) {
       getCartItems(user._id, token)
         .then((data) => {
@@ -38,9 +37,9 @@ const App = () => {
           console.log(err);
         });
     }
-  }
+  };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     //getAllProducts
     getProducts().then((data) => {
       if (data.error) {

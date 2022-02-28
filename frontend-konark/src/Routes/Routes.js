@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, Fragment } from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 
 import "../App.css";
@@ -6,7 +6,7 @@ import "../App.css";
 //Pages
 import Home from "../Pages/Home";
 import About from "../Pages/About";
-import Contact from "../Pages/Contact";
+
 import Faq from "../Pages/FAQ";
 import BuyConnection from "../Pages/BuyConnection";
 import Login from "../Pages/Login";
@@ -31,14 +31,15 @@ import AdminRoutes from "../Routes/AdminRoutes";
 import { AppContext } from "../Context/AppContext";
 
 export const Routes = () => {
-  const { state, dispatch } = useContext(AppContext);
+  const { state } = useContext(AppContext);
   return (
     <div className="app">
       <BrowserRouter>
-        <Switch>
-          <Route path="/login" exact component={Login} />
-          {state.products.length > 0 ? (
-            <div>
+        {state.products.length > 0 ? (
+          <Switch>
+            <Route path="/login" exact component={Login} />
+
+            <Fragment>
               <Header />
               {/* <LoadingBar
                 onLoaderFinished={() => {
@@ -69,16 +70,15 @@ export const Routes = () => {
               <Route path="/packs" exact component={Packs} />
               <Route path="/" exact component={Home} />
               <Route path="/about" exact component={About} />
-              <Route path="/contact" exact component={Contact} />
               <Route path="/FAQ" exact component={Faq} />
               <Footer />
-            </div>
-          ) : (
-            <div class="spin-wrapper">
-              <div class="spinner"></div>
-            </div>
-          )}
-        </Switch>
+            </Fragment>
+          </Switch>
+        ) : (
+          <div className="spin-wrapper">
+            <div className="spinner"></div>
+          </div>
+        )}
       </BrowserRouter>
     </div>
   );

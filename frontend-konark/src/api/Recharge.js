@@ -24,3 +24,20 @@ export const checkPackExpiry = (userid, token) => {
       return err;
     });
 };
+
+export const setNewPack = (userid, token, packid) => {
+  return fetch(`${API}/user/newpack/${userid}/${packid}`, {
+    method: "PUT",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .catch((err) => {
+      return err;
+    });
+};

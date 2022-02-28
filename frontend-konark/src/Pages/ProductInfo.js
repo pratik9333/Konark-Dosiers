@@ -13,6 +13,7 @@ import { ADD_CART } from "../Context/action.types";
 const ProductInfo = (props) => {
   const [Product, setProduct] = useState({});
   const { state, dispatch } = useContext(AppContext);
+  const [loading, setloading] = useState(false);
   const alert = useAlert();
   const { user, token } = isAuthenticated();
 
@@ -34,8 +35,10 @@ const ProductInfo = (props) => {
         );
       }
       if (state.user.newUser === false) {
+        setloading(!loading);
         addCart(user._id, data, token)
           .then((data) => {
+            setloading(false);
             if (data.error) {
               return alert.show(data.error);
             }
@@ -43,6 +46,7 @@ const ProductInfo = (props) => {
             dispatch({ type: ADD_CART, payload: data.cart });
           })
           .catch((err) => {
+            setloading(false);
             console.log(err);
           });
       }
@@ -56,10 +60,17 @@ const ProductInfo = (props) => {
     window.scrollTo(1, 1);
   }, []);
 
+  const fadePage = {
+    opacity: "0.6",
+  };
+  const unFadePage = {
+    opacity: "1",
+  };
+
   return (
     <Fragment>
       <Breadcumb to="Product Details" what="Product Details" />
-      <div className="row mt-50">
+      <div className="row mt-50" style={loading ? fadePage : unFadePage}>
         <div className="col-md-5" style={{ marginTop: "80px" }}>
           <div className="single-product-slider">
             <Imagehelper product={Product} />

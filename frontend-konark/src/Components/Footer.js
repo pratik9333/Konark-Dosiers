@@ -11,40 +11,25 @@ export const Footer = () => {
           <div className="col-md-12">
             <ul className="social-media">
               <li>
-                <a href="#">
-                  <i className="tf-ion-social-facebook"></i>
-                </a>
+                <i className="tf-ion-social-facebook"></i>
               </li>
               <li>
-                <a href="#">
-                  <i className="tf-ion-social-instagram"></i>
-                </a>
+                <i className="tf-ion-social-instagram"></i>
               </li>
               <li>
-                <a href="#">
-                  <i className="tf-ion-social-twitter"></i>
-                </a>
+                <i className="tf-ion-social-twitter"></i>
               </li>
               <li>
-                <a href="#">
-                  <i className="tf-ion-social-pinterest"></i>
-                </a>
+                <i className="tf-ion-social-pinterest"></i>
               </li>
             </ul>
             <ul className="footer-menu text-uppercase">
-              <li>
-                <a href="contact.html">CONTACT</a>
-              </li>
-              <li>
-                <a href="shop.html">SHOP</a>
-              </li>
-              <li>
-                <a href="contact.html">PRIVACY POLICY</a>
-              </li>
+              <li>CONTACT</li>
+              <li>SHOP</li>
+              <li>PRIVACY POLICY</li>
             </ul>
             <p className="copyright-text text-dark">
-              Copyright &copy;2021, Designed &amp; Developed by{" "}
-              <a href="#">Konark Dossiers</a>
+              Copyright &copy;2021, Designed &amp; Developed by Konark Dossiers
             </p>
           </div>
         </div>
