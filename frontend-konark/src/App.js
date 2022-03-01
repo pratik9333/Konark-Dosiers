@@ -5,6 +5,7 @@ import { Routes } from "./Routes/Routes";
 import { AppContext } from "./Context/AppContext";
 import { getProducts } from "./api/Product";
 import { getPacks } from "./api/Recharge";
+import { Spinner } from "react-spinners-css";
 
 //Actions
 import {
@@ -78,7 +79,24 @@ const App = () => {
   return (
     <AppContext.Provider value={{ state, dispatch, setCartItems }}>
       <div>
-        <Routes />
+        {state.loading ? (
+          <div>
+            <span
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100vh",
+              }}
+            >
+              <Spinner color="#000" size={50} />
+            </span>
+          </div>
+        ) : (
+          <div>
+            <Routes />
+          </div>
+        )}
       </div>
     </AppContext.Provider>
   );

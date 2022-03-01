@@ -69,8 +69,6 @@ const Packs = (props) => {
             datas
           );
 
-          console.log(res);
-
           setNewPack(user._id, token, packid)
             .then((data) => {
               if (data.error) {

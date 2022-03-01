@@ -5,7 +5,7 @@ import {
   ADD_CART,
   UPDATE_CART,
   ORDER_DETAILS,
-  LOADING_BAR,
+  LOADING,
 } from "./action.types";
 
 export const initialState = {
@@ -14,6 +14,7 @@ export const initialState = {
   user: {},
   cart: {},
   orderDetails: [],
+  loading: false,
 };
 
 export const reducer = (state, action) => {
@@ -43,7 +44,12 @@ export const reducer = (state, action) => {
         ...state,
         cart: action.payload,
       };
-
+    case LOADING: {
+      return {
+        ...state,
+        loading: action.payload,
+      };
+    }
     case ORDER_DETAILS:
       if (action.payload === null) {
         return {

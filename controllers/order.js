@@ -117,6 +117,7 @@ exports.downloadInvoice = async (req, res) => {
 
     res.download(filePath);
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ error: "Server error" });
   }
 };

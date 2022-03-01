@@ -9,7 +9,10 @@ export const Footer = () => {
       <div className="container">
         <div className="row">
           <div className="col-md-12">
-            <ul className="social-media">
+            <ul
+              className="social-media"
+              style={{ color: "#000", fontSize: "20px" }}
+            >
               <li>
                 <i className="tf-ion-social-facebook"></i>
               </li>
@@ -23,7 +26,10 @@ export const Footer = () => {
                 <i className="tf-ion-social-pinterest"></i>
               </li>
             </ul>
-            <ul className="footer-menu text-uppercase">
+            <ul
+              className="footer-menu text-uppercase"
+              style={{ color: "#000" }}
+            >
               <li>CONTACT</li>
               <li>SHOP</li>
               <li>PRIVACY POLICY</li>

@@ -13,18 +13,12 @@ import { AppContext } from "../Context/AppContext";
 import { AiOutlinePlusCircle, AiOutlineMinusCircle } from "react-icons/ai";
 import { BiRupee } from "react-icons/bi";
 import { deleteCartItem, updateCartItem } from "../api/cart";
-import { ADD_CART, ORDER_DETAILS } from "../Context/action.types";
-import { Spinner } from "react-spinners-css";
+import { ADD_CART, LOADING, ORDER_DETAILS } from "../Context/action.types";
 
 const Order = (props) => {
-  const { user } = isAuthenticated();
+  const { user, token } = isAuthenticated();
   const [flag, setflag] = useState(true);
   const [loading, setloading] = useState(false);
-
-  //Authentication
-  const userId = isAuthenticated() && isAuthenticated().user._id;
-  const token = isAuthenticated() && isAuthenticated().token;
-
   const [order, setOrderInfo] = useState({
     address: {
       fulladdress: "",
@@ -36,14 +30,14 @@ const Order = (props) => {
     paymentId: "",
     orderId: "",
     product: [],
-    user: userId,
+    user: user._id,
     recharge: null,
   });
-  let alert = useAlert();
+
   const { state, dispatch, setCartItems } = useContext(AppContext);
 
+  let alert = useAlert();
   let history = useHistory();
-
   let newConnectionProd = [];
   const cartProducts = [];
 
@@ -201,7 +195,7 @@ const Order = (props) => {
       // creating a new order
       let pay = await payment(
         state.cart ? state.cart.cartTotal * 100 : order.amount * 100,
-        userId,
+        user._id,
         token
       );
 
@@ -222,15 +216,15 @@ const Order = (props) => {
             razorpaySignature: response.razorpay_signature,
           };
           const res = await axios.post(
-            `${API}/payment/success/${userId}`,
+            `${API}/payment/success/${user._id}`,
             datas
           );
 
-          setloading(!loading);
+          dispatch({ type: LOADING, payload: true });
 
           axios
             .post(
-              `${API}/order/create/${userId}`,
+              `${API}/order/create/${user._id}`,
               {
                 address: order.address,
                 amount: state.cart ? state.cart.cartTotal : order.amount,
@@ -247,7 +241,6 @@ const Order = (props) => {
               }
             )
             .then((response) => {
-              setloading(false);
               dispatch({
                 type: ORDER_DETAILS,
                 payload: response.data.orders,
@@ -257,13 +250,14 @@ const Order = (props) => {
                 pathname: "/confirmation",
                 state: { orderStatus: true },
               });
+              dispatch({ type: LOADING, payload: false });
             })
             .catch((error) => {
-              setloading(false);
               history.push({
                 pathname: "/confirmation",
                 state: { orderStatus: false },
               });
+              dispatch({ type: LOADING, payload: false });
               return alert.error(
                 "Order failed, money will be refunded in few minutes"
               );
@@ -491,18 +485,6 @@ const Order = (props) => {
                         : ""}
 
                       <h4 className="mt-40 mb-40 pb-40">Order Summary</h4>
-
-                      <span
-                        style={{
-                          display: loading ? "flex" : "none",
-                          justifyContent: "center",
-                          position: "absolute",
-                          left: "0",
-                          right: "0",
-                        }}
-                      >
-                        <Spinner color="#000" size={50} />
-                      </span>
 
                       <div className="discount-code mt-40">
                         <p

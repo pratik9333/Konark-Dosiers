@@ -5,3 +5,4 @@ export const ADD_CART = "ADD_CART";
 export const UPDATE_CART = "UPDATE_CART";
 export const LOADING_BAR = "LOADING_BAR";
 export const ORDER_DETAILS = "ORDER_DETAILS";
+export const LOADING = "LOADING";

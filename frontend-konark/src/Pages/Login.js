@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useAlert } from "react-alert";
 import { Link, Redirect } from "react-router-dom";
 import { isAuthenticated, authenticate, signin } from "../api/Auth";
 import logo from "../Images/logo.png";
-import { Spinner } from "react-spinners-css";
+import { AppContext } from "../Context/AppContext";
+import { LOADING } from "../Context/action.types";
 
 const Login = () => {
   const [values, setValues] = useState({
@@ -13,7 +14,7 @@ const Login = () => {
     didRedirect: false,
   });
 
-  const [loading, setloading] = useState(false);
+  const { dispatch } = useContext(AppContext);
 
   const { email, password, error, didRedirect } = values;
   const { user } = isAuthenticated();
@@ -25,15 +26,12 @@ const Login = () => {
   }, []);
 
   const performRedirect = () => {
-    if (didRedirect) {
+    if (isAuthenticated()) {
       if (user && user.role == "admin") {
         return <Redirect to="/admin/dashboard" />;
       } else {
         return <Redirect to="/userdashboard" />;
       }
-    }
-    if (isAuthenticated()) {
-      return <Redirect to="/" />;
     }
   };
 
@@ -42,16 +40,14 @@ const Login = () => {
   };
 
   const handleSubmit = (event) => {
-    setloading(!loading);
     event.preventDefault();
     setValues({ ...values, error: false, Redirect: false });
+    dispatch({ type: LOADING, payload: true });
     signin({ email, password })
       .then((data) => {
         if (data.error) {
           alert.error(data.error);
-          setloading(false);
         } else {
-          setloading(false);
           authenticate(data, () => {
             setValues({
               ...values,
@@ -61,23 +57,17 @@ const Login = () => {
               didRedirect: true,
             });
           });
+          dispatch({ type: LOADING, payload: false });
         }
       })
-      .catch((err) => console.log(err));
-  };
-
-  const fadePage = {
-    opacity: "0.6",
-  };
-  const unFadePage = {
-    opacity: "1",
+      .catch((err) => {
+        dispatch({ type: LOADING, payload: false });
+        console.log(err);
+      });
   };
 
   return (
-    <section
-      className="signin-page account"
-      style={loading ? fadePage : unFadePage}
-    >
+    <section className="signin-page account">
       {performRedirect()}
       <div className="container">
         <div className="row">
@@ -87,17 +77,6 @@ const Login = () => {
                 <img src={logo} alt="" />
               </Link>
               <h2 className="text-center">Welcome Back</h2>
-              <span
-                style={{
-                  display: loading ? "flex" : "none",
-                  justifyContent: "center",
-                  position: "absolute",
-                  left: "0",
-                  right: "0",
-                }}
-              >
-                <Spinner color="#000" size={50} />
-              </span>
               <form className="text-left clearfix">
                 <div className="form-group">
                   <input
