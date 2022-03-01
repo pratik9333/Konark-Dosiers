@@ -35,6 +35,9 @@ const Packs = (props) => {
   }
 
   async function displayRazorpay(packprice, packid) {
+    if (user.activePack && user.activePack.expiresAt !== null) {
+      return alert.error("Your current pack is still active");
+    }
     try {
       const res = await loadScript(
         "https://checkout.razorpay.com/v1/checkout.js"

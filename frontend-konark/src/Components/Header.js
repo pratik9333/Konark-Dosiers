@@ -31,10 +31,6 @@ export const Header = () => {
             <div className="col-md-4 col-xs-12 col-sm-4">
               <ul className="top-menu text-right list-inline">
                 <li className="dropdown search dropdown-slide">
-                  <a href="#!"> Recharge</a>
-                </li>
-
-                <li className="dropdown search dropdown-slide">
                   <a
                     style={{ cursor: "pointer" }}
                     className="dropdown-toggle"
@@ -136,7 +132,17 @@ export const Header = () => {
                           <li className="dropdown-header">Utilities</li>
                           <li role="separator" className="divider"></li>
                           <li>
-                            <Link to="/">Recharge Plan</Link>
+                            <Link
+                              to={{
+                                pathname: "/packs",
+                                state: {
+                                  packs: state.packs,
+                                  selectedPack: "none",
+                                },
+                              }}
+                            >
+                              Recharge Plan
+                            </Link>
                           </li>
                           {!state.user.newUser || state.user.activePack ? (
                             <li>

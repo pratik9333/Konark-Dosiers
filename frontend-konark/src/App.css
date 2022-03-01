@@ -2089,6 +2089,9 @@ input[type="tel"]:focus {
   .dashboard-menu li a {
     padding: 10px 15px;
   }
+  .button-center {
+    text-align: center;
+  }
 }
 
 @media (max-width: 480px) {

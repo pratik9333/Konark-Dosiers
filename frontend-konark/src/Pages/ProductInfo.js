@@ -65,6 +65,7 @@ const ProductInfo = (props) => {
   };
   const unFadePage = {
     opacity: "1",
+    padding: "10px 25px",
   };
 
   return (
@@ -95,27 +96,29 @@ const ProductInfo = (props) => {
               <span>Category:</span>
               {Product.name}
             </div>
-            {props.match.params.id == 2 ? (
-              <button
-                type="button"
-                onClick={() => {
-                  showToast(Product._id);
-                }}
-                className="btn btn-main mt-50"
-              >
-                Add to cart
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={() => {
-                  showToast("new");
-                }}
-                className="btn btn-main mt-50"
-              >
-                Buy New Connection
-              </button>
-            )}
+            <div className="button-center">
+              {props.match.params.id == 2 ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    showToast(Product._id);
+                  }}
+                  className="btn btn-main mt-50"
+                >
+                  Add to cart
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    showToast("new");
+                  }}
+                  className="btn btn-main mt-50"
+                >
+                  Buy New Connection
+                </button>
+              )}
+            </div>
           </div>
         </div>
         <div className="col-xs-12 mt-50 p-5">
