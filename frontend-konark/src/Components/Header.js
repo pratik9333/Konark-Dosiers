@@ -100,12 +100,6 @@ export const Header = () => {
                             <Link to="/contact">Contact Us</Link>
                           </li>
                           <li>
-                            <Link to="/about">About Us</Link>
-                          </li>
-                          <li>
-                            <Link to="/">Coming Soon</Link>
-                          </li>
-                          <li>
                             <Link to="/faq">FAQ</Link>
                           </li>
                         </ul>

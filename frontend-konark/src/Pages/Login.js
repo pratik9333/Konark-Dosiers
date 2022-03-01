@@ -10,13 +10,11 @@ const Login = () => {
   const [values, setValues] = useState({
     email: "",
     password: "",
-    error: "",
-    didRedirect: false,
   });
 
   const { dispatch } = useContext(AppContext);
 
-  const { email, password, error, didRedirect } = values;
+  const { email, password } = values;
   const { user } = isAuthenticated();
 
   let alert = useAlert();
@@ -29,8 +27,11 @@ const Login = () => {
     if (isAuthenticated()) {
       if (user && user.role == "admin") {
         return <Redirect to="/admin/dashboard" />;
-      } else {
+      }
+      if (user && user.role == "user") {
         return <Redirect to="/userdashboard" />;
+      } else {
+        return <Redirect to="/login" />;
       }
     }
   };
@@ -41,11 +42,12 @@ const Login = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setValues({ ...values, error: false, Redirect: false });
+    setValues({ ...values });
     dispatch({ type: LOADING, payload: true });
     signin({ email, password })
       .then((data) => {
         if (data.error) {
+          dispatch({ type: LOADING, payload: false });
           alert.error(data.error);
         } else {
           authenticate(data, () => {
@@ -53,8 +55,6 @@ const Login = () => {
               ...values,
               email: "",
               password: "",
-              error: "",
-              didRedirect: true,
             });
           });
           dispatch({ type: LOADING, payload: false });

@@ -5,7 +5,6 @@ import "../App.css";
 
 //Pages
 import Home from "../Pages/Home";
-import About from "../Pages/About";
 
 import Faq from "../Pages/FAQ";
 import BuyConnection from "../Pages/BuyConnection";
@@ -29,6 +28,8 @@ import PrivateRoutes from "../Routes/PrivateRoutes";
 //AdminRoute
 import AdminRoutes from "../Routes/AdminRoutes";
 import { AppContext } from "../Context/AppContext";
+import AdminHome from "../Pages/AdminPages/AdminHome";
+import Contact from "../Pages/Contact";
 
 export const Routes = () => {
   const { state } = useContext(AppContext);
@@ -38,6 +39,7 @@ export const Routes = () => {
         {state.products.length > 0 ? (
           <Switch>
             <Route path="/login" exact component={Login} />
+            <AdminRoutes path="/admin/dashboard" exact component={AdminHome} />
 
             <Fragment>
               <Header />
@@ -52,6 +54,7 @@ export const Routes = () => {
                 component={Dashboard}
               />
               <PrivateRoutes path="/orders" exact component={Orders} />
+
               <PrivateRoutes path="/packdetails" exact component={PackDetail} />
               <PrivateRoutes path="/userprofile" exact component={Profile} />
 
@@ -68,8 +71,8 @@ export const Routes = () => {
               <PrivateRoutes path="/order" exact component={Order} />
               <Route path="/productdetails/:id" exact component={ProductInfo} />
               <Route path="/packs" exact component={Packs} />
+              <Route path="/contact" exact component={Contact} />
               <Route path="/" exact component={Home} />
-              <Route path="/about" exact component={About} />
               <Route path="/FAQ" exact component={Faq} />
               <Footer />
             </Fragment>
