@@ -108,7 +108,10 @@ exports.downloadInvoice = async (req, res) => {
       `../public/Invoices/ORDER-${order._id}.pdf`
     );
 
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
     const page = await browser.newPage();
 
     await page.goto(url, { waitUntil: ["domcontentloaded", "networkidle0"] });
