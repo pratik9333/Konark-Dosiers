@@ -1,4 +1,4 @@
-const Recharge = require("../models/recharge");
+const Recharge = require("../models/recharge.js");
 const { validationResult } = require("express-validator");
 let moment = require("moment");
 var schedule = require("node-schedule");

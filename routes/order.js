@@ -2,10 +2,14 @@ var express = require("express");
 
 var router = express.Router();
 
-const { getUserById, addToActivePack } = require("../controllers/user");
-const { isSignedIn, isAuthenticated, isAdmin } = require("../controllers/auth");
-const { updateStock, getProductById } = require("../controllers/product");
-const { removeAllUserItem } = require("../controllers/cart");
+const { getUserById, addToActivePack } = require("../controllers/user.js");
+const {
+  isSignedIn,
+  isAuthenticated,
+  isAdmin,
+} = require("../controllers/auth.js");
+const { updateStock, getProductById } = require("../controllers/product.js");
+const { removeAllUserItem } = require("../controllers/cart.js");
 
 const {
   getOrderById,

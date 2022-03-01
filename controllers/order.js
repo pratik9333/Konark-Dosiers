@@ -1,10 +1,10 @@
-const Order = require("../models/order");
-const Recharge = require("../models/recharge");
-const User = require("../models/user");
+const Order = require("../models/order.js");
+const Recharge = require("../models/recharge.js");
+const User = require("../models/user.js");
 const path = require("path");
 const puppeteer = require("puppeteer");
 const moment = require("moment");
-const { packRemainder } = require("../utils/scheduler");
+const { packRemainder } = require("../utils/scheduler.js");
 
 exports.getOrderById = (req, res, next, id) => {
   Order.findById(id)

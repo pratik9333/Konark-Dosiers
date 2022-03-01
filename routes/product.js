@@ -9,9 +9,13 @@ const {
   deleteProduct,
   updateProduct,
   getAllProducts,
-} = require("../controllers/product");
-const { getUserById } = require("../controllers/user");
-const { isSignedIn, isAuthenticated, isAdmin } = require("../controllers/auth");
+} = require("../controllers/product.js");
+const { getUserById } = require("../controllers/user.js");
+const {
+  isSignedIn,
+  isAuthenticated,
+  isAdmin,
+} = require("../controllers/auth.js");
 
 // all of params
 router.param("userId", getUserById);

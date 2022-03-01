@@ -1,7 +1,7 @@
 var schedule = require("node-schedule");
-const Recharge = require("../models/recharge");
-const User = require("../models/user");
-const { sendMail } = require("../utils/nodemailer");
+const Recharge = require("../models/recharge.js");
+const User = require("../models/user.js");
+const { sendMail } = require("../utils/nodemailer.js");
 let moment = require("moment");
 
 let expiryDate;

@@ -2,7 +2,7 @@ var express = require("express");
 var router = express.Router();
 
 const { isSignedIn, isAuthenticated } = require("../controllers/auth.js");
-const { getUserById } = require("../controllers/user");
+const { getUserById } = require("../controllers/user.js");
 const { razorpay, successrazorpay } = require("../controllers/paymentB.js");
 
 router.param("userId", getUserById);

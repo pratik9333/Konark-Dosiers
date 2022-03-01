@@ -4,16 +4,16 @@ const express = require("express");
 const app = express();
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-const authRoutes = require("./routes/auth");
-const userRoutes = require("./routes/user");
-const rechargeRoutes = require("./routes/recharge");
-const orderRoutes = require("./routes/order");
-const productRoutes = require("./routes/product");
-const paymentBRoutes = require("./routes/paymentBRoutes");
+const authRoutes = require("./routes/auth.js");
+const userRoutes = require("./routes/user.js");
+const rechargeRoutes = require("./routes/recharge.js");
+const orderRoutes = require("./routes/order.js");
+const productRoutes = require("./routes/product.js");
+const paymentBRoutes = require("./routes/paymentBRoutes.js");
 const path = require("path");
-const Cart = require("./routes/cart");
+const Cart = require("./routes/cart.js");
 const exphb = require("express-handlebars");
-const { scheduleAgainDueToServerDown } = require("./utils/scheduler");
+const { scheduleAgainDueToServerDown } = require("./utils/scheduler.js");
 
 // Middle Wares
 app.use(express.json());

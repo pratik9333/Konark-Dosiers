@@ -1,7 +1,7 @@
-const Cart = require("../models/cart");
-const Order = require("../models/order");
-const Product = require("../models/product");
-const { cancelOrder } = require("./order");
+const Cart = require("../models/cart.js");
+const Order = require("../models/order.js");
+const Product = require("../models/product.js");
+const { cancelOrder } = require("./order.js");
 
 exports.addToCart = async (req, res) => {
   try {

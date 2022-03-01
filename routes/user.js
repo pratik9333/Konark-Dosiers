@@ -9,14 +9,14 @@ const {
   getAllIsp,
   deleteUser,
   setNewPackForUser,
-} = require("../controllers/user");
+} = require("../controllers/user.js");
 const {
   isSignedIn,
   isAuthenticated,
   isAdmin,
   isIsp,
-} = require("../controllers/auth");
-const { checkPackExpiry } = require("../controllers/recharge");
+} = require("../controllers/auth.js");
+const { checkPackExpiry } = require("../controllers/recharge.js");
 
 router.param("userId", getUserById);
 

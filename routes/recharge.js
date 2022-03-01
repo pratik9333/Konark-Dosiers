@@ -8,7 +8,7 @@ const {
   isAuthenticated,
   isAdmin,
   isIsp,
-} = require("../controllers/auth");
+} = require("../controllers/auth.js");
 const {
   createPack,
   setActivePack,
@@ -16,8 +16,8 @@ const {
   getRechargeById,
   showPacks,
   removePack,
-} = require("../controllers/recharge");
-const { getUserById } = require("../controllers/user");
+} = require("../controllers/recharge.js");
+const { getUserById } = require("../controllers/user.js");
 
 //Params
 router.param("userId", getUserById);

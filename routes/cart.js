@@ -1,14 +1,14 @@
 const router = require("express").Router();
 
-const { getUserById } = require("../controllers/user");
+const { getUserById } = require("../controllers/user.js");
 const {
   addToCart,
   updateCart,
   getUserSpecificCartItems,
   removeCart,
   removeAllUserItem,
-} = require("../controllers/cart");
-const { isSignedIn, isAuthenticated } = require("../controllers/auth");
+} = require("../controllers/cart.js");
+const { isSignedIn, isAuthenticated } = require("../controllers/auth.js");
 
 //Params
 router.param("userId", getUserById);

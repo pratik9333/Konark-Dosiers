@@ -1,8 +1,8 @@
-const User = require("../models/user");
-const Order = require("../models/order");
-const Recharge = require("../models/recharge");
+const User = require("../models/user.js");
+const Order = require("../models/order.js");
+const Recharge = require("../models/recharge.js");
 const moment = require("moment");
-const { cancelOrder } = require("./order");
+const { cancelOrder } = require("./order.js");
 
 exports.getUserById = (req, res, next, id) => {
   User.findById(id).exec((err, user) => {
