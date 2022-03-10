@@ -46,3 +46,16 @@ export const authenticate = (data, next) => {
     next();
   }
 };
+
+// export const isAdmin = () => {
+//   if (typeof window == "undefined") {
+//     return false;
+//   }
+//   if (localStorage.getItem("jwt")) {
+//     let x = JSON.parse(localStorage.getItem("jwt"));
+
+//     if(x.user.role === "admin")
+//   } else {
+//     return false;
+//   }
+// };

@@ -25,10 +25,8 @@ import Profile from "../Components/Profile";
 //PrivateRoute
 import PrivateRoutes from "../Routes/PrivateRoutes";
 
-//AdminRoute
-import AdminRoutes from "../Routes/AdminRoutes";
 import { AppContext } from "../Context/AppContext";
-import AdminHome from "../Pages/AdminPages/AdminHome";
+// import Admin from "../Admin/components/Admin/Admin.js";
 import Contact from "../Pages/Contact";
 
 export const Routes = () => {
@@ -39,15 +37,10 @@ export const Routes = () => {
         {state.products.length > 0 ? (
           <Switch>
             <Route path="/login" exact component={Login} />
-            <AdminRoutes path="/admin/dashboard" exact component={AdminHome} />
+            {/* <AdminRoutes path="/admin/dashboard" exact component={Admin} /> */}
 
             <Fragment>
               <Header />
-              {/* <LoadingBar
-                onLoaderFinished={() => {
-                  dispatch({ type: LOADING_BAR, payload: 0 });
-                }}
-              /> */}
               <PrivateRoutes
                 path="/userdashboard"
                 exact
