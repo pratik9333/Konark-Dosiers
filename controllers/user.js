@@ -41,7 +41,7 @@ exports.getAllUsers = (req, res) => {
 };
 
 exports.getAllIsp = (req, res) => {
-  User.find({ role: "isp" })
+  User.find({ role: { $in: ["isp", "user"] } })
     .select("firstname lastname email phone role")
     .exec((err, users) => {
       if (err) {

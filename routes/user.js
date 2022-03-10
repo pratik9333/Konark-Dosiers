@@ -16,27 +16,19 @@ const {
   isAdmin,
   isIsp,
 } = require("../controllers/auth.js");
-const { checkPackExpiry } = require("../controllers/recharge.js");
 
 router.param("userId", getUserById);
 
 router.get("/user/:userId", isSignedIn, isAuthenticated, getUser);
 router.put("/user/:userId", isSignedIn, isAuthenticated, isAdmin, updateUser);
-router.get("/users/", isSignedIn, isAuthenticated, isIsp, getAllUsers);
-router.get("/isp/", isSignedIn, isAuthenticated, isAdmin, getAllIsp);
+router.get("/users/:userId", isSignedIn, isAuthenticated, isIsp, getAllUsers);
+router.get("/isp/:userId", isSignedIn, isAuthenticated, isAdmin, getAllIsp);
 router.delete(
   "/user/:userId",
   isSignedIn,
   isAuthenticated,
   isAdmin,
   deleteUser
-);
-
-router.post(
-  "/checkexpiry/:userId",
-  isSignedIn,
-  isAuthenticated,
-  checkPackExpiry
 );
 
 //set new pack for user

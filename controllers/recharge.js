@@ -84,32 +84,3 @@ exports.removePack = (req, res) => {
     });
   });
 };
-
-exports.checkPackExpiry = async (req, res) => {
-  try {
-    const user = req.profile;
-
-    if (user.activePack.recharge) {
-      const startDate = new Date(Date.now());
-      let currentDate = moment(startDate);
-
-      console.log(
-        moment(currentDate.format("YY-MMMM YYYY")).isAfter(
-          user.activePack.expiresAt
-        )
-      );
-
-      // if (currentDate.format("Do MMMM YYYY") > user.activePack.expiresAt) {
-      //   console.log(1);
-      //   user.activePack.expiresAt = null;
-      //   user.activePack.recharge = null;
-      // }
-      await user.save();
-    }
-    return res.status(200).json({ success: true });
-  } catch (error) {
-    return res
-      .status(500)
-      .json({ error: "Server has occured has problem, please try again" });
-  }
-};
