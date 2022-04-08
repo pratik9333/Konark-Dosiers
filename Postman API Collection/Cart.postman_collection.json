@@ -1,0 +1,144 @@
+{
+	"info": {
+		"_postman_id": "e50dca84-6658-46d4-922b-c445cde739bf",
+		"name": "Cart",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "add to cart",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{DOMAIN}}/cart/620cd8259077900016b09fe9/620382c66da2a20b2d6b0b2c",
+					"host": [
+						"{{DOMAIN}}"
+					],
+					"path": [
+						"cart",
+						"620cd8259077900016b09fe9",
+						"620382c66da2a20b2d6b0b2c"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update cart",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"incr\": false,\n    \"decr\": true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{DOMAIN}}/cart/6203be7f37af871d07a1b10b/620384296da2a20b2d6b0b32",
+					"host": [
+						"{{DOMAIN}}"
+					],
+					"path": [
+						"cart",
+						"6203be7f37af871d07a1b10b",
+						"620384296da2a20b2d6b0b32"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get user cart items",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"incr\": false,\n    \"decr\": true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{DOMAIN}}/cart/620cd8259077900016b09fe9",
+					"host": [
+						"{{DOMAIN}}"
+					],
+					"path": [
+						"cart",
+						"620cd8259077900016b09fe9"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete item from users cart",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{DOMAIN}}/cart/6203be7f37af871d07a1b10b/620384296da2a20b2d6b0b32",
+					"host": [
+						"{{DOMAIN}}"
+					],
+					"path": [
+						"cart",
+						"6203be7f37af871d07a1b10b",
+						"620384296da2a20b2d6b0b32"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MjBjZDgyNTkwNzc5MDAwMTZiMDlmZTkiLCJpYXQiOjE2NDUwOTU5MzZ9.9JB24MNWZT6Uhlpvi3pnEO9xNbVcyRtfZNu4f71qqoI",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

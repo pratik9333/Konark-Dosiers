@@ -17,16 +17,15 @@ const packRemainder = async (user) => {
       expiryDate[0],
       expiryDate[1] - 1,
       expiryDate[2],
-      20,
-      11,
+      01,
+      33,
       0
     );
     remainderDate.setDate(remainderDate.getDate() - 1);
 
     const j = schedule.scheduleJob(remainderDate, function () {
       const subject = `Recharge pack remiander`;
-      const mailBody = `<h4>Hello ${user.firstname} ${user.lastname}, your recharge pack <b>${rechargePack.packname}</b> is going to be expire tomorrow. You can recharge your account through our website with amazing recharge offers available!<h4> <br />
-
+      const mailBody = `<p>Hello ${user.firstname} ${user.lastname}, your recharge pack <b>${rechargePack.packname}</b> is going to be expire tomorrow. You can recharge your account through our <a href="https://konark-dossiers.netlify.app/"> Website </a> with amazing recharge offers available!</p> <br />
     <p>Thanks and regards,<br />
     Konark Dossiers</p>`;
       sendMail(user.email, mailBody, subject);
@@ -43,8 +42,8 @@ const expirePack = async (user) => {
     expiryDate[0],
     expiryDate[1] - 1,
     expiryDate[2],
-    20,
     12,
+    20,
     00
   );
 
@@ -57,7 +56,7 @@ const expirePack = async (user) => {
   console.log(j);
 };
 
-exports.scheduleAgainDueToServerDown = async () => {
+const scheduleAgainDueToServerDown = async () => {
   const users = await User.find();
 
   for (let user of users) {
@@ -74,3 +73,5 @@ exports.scheduleAgainDueToServerDown = async () => {
     }
   }
 };
+
+module.exports = { packRemainder, scheduleAgainDueToServerDown };

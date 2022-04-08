@@ -1,0 +1,181 @@
+{
+	"info": {
+		"_postman_id": "b1466be1-34bb-4ab4-a5a5-c5bde875b7ad",
+		"name": "Recharge",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "create pack",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"packname\" : \"New Kerala HD Pack_New\",\n    \"description\" : \"Kerela HD pack contains 58 channels worth rupees 291 with validity of 30 days\",\n    \"validity\": \"1 month\",\n    \"packprice\": 291,\n    \"option\": \"hd\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{DOMAIN}}/createpack/6202ba651587850ab76c6611",
+					"host": [
+						"{{DOMAIN}}"
+					],
+					"path": [
+						"createpack",
+						"6202ba651587850ab76c6611"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "set active pack",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{DOMAIN}}/setactivepack/6202ba651587850ab76c6611/6202bb6e4eb5d40b0e8fce42",
+					"host": [
+						"{{DOMAIN}}"
+					],
+					"path": [
+						"setactivepack",
+						"6202ba651587850ab76c6611",
+						"6202bb6e4eb5d40b0e8fce42"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "show active packs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{DOMAIN}}/showactivepack",
+					"host": [
+						"{{DOMAIN}}"
+					],
+					"path": [
+						"showactivepack"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "show all packs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{DOMAIN}}/packs/6203be7f37af871d07a1b10b",
+					"host": [
+						"{{DOMAIN}}"
+					],
+					"path": [
+						"packs",
+						"6203be7f37af871d07a1b10b"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "remove pack",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{DOMAIN}}/removepack/6202ba651587850ab76c6611/6202bb404eb5d40b0e8fce3f",
+					"host": [
+						"{{DOMAIN}}"
+					],
+					"path": [
+						"removepack",
+						"6202ba651587850ab76c6611",
+						"6202bb404eb5d40b0e8fce3f"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "set new pack user",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{DOMAIN}}/user/newpack/621a5f63f0edd23663582f1b/6202baee4eb5d40b0e8fce3c",
+					"host": [
+						"{{DOMAIN}}"
+					],
+					"path": [
+						"user",
+						"newpack",
+						"621a5f63f0edd23663582f1b",
+						"6202baee4eb5d40b0e8fce3c"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "check expiry",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{DOMAIN}}/checkexpiry/6203be7f37af871d07a1b10b",
+					"host": [
+						"{{DOMAIN}}"
+					],
+					"path": [
+						"checkexpiry",
+						"6203be7f37af871d07a1b10b"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MjFhNWY2M2YwZWRkMjM2NjM1ODJmMWIiLCJpYXQiOjE2NDYwNzQ2NjF9.5ghvOw_P9LPB6wKQPy1PUO8Y-0jY3MxZ0b5MmDTQRhA",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

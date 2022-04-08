@@ -11,8 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",
-    "braintree": "^3.7.0",
-    "cloudinary": "^1.28.1",
+    "chrome-aws-lambda": "^10.1.0",
     "cookie-parser": "^1.4.4",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
@@ -32,8 +31,6 @@
     "node-schedule": "^2.1.0",
     "nodemailer": "^6.7.2",
     "nodemon": "^1.19.4",
-    "npm": "^6.14.13",
-    "pdfkit": "^0.13.0",
     "puppeteer": "^13.4.0",
     "razorpay": "^2.8.0",
     "uuid": "^3.3.3"

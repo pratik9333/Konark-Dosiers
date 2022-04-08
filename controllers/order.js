@@ -5,6 +5,7 @@ const path = require("path");
 const puppeteer = require("puppeteer");
 const moment = require("moment");
 const { packRemainder } = require("../utils/scheduler.js");
+const chromium = require("chrome-aws-lambda");
 
 exports.getOrderById = (req, res, next, id) => {
   Order.findById(id)
@@ -108,9 +109,12 @@ exports.downloadInvoice = async (req, res) => {
       `../public/Invoices/ORDER-${order._id}.pdf`
     );
 
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    const browser = await chromium.puppeteer.launch({
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath,
+      headless: chromium.headless,
+      ignoreHTTPSErrors: true,
     });
     const page = await browser.newPage();
 
@@ -160,7 +164,7 @@ exports.updateStatus = async (req, res) => {
 
         const startDate = new Date(Date.now());
         let endDateMoment = moment(startDate);
-        endDateMoment.add(val, "months");
+        endDateMoment.add(val, "days");
 
         user.activePack.expiresAt = endDateMoment.format("YYYY-MM-DD");
         user.newUser = false;

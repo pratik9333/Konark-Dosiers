@@ -1,0 +1,115 @@
+{
+	"info": {
+		"_postman_id": "a17557e5-94f8-41d4-a50b-d7c5d72b2a81",
+		"name": "Auth",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "signup",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstname\": \"pra\",\n    \"lastname\" : \"Gupta\",\n    \"email\" : \"ragaws1674@gmail.com\",\n    \"phone\" : \"9347838383\",\n    \"role\" : \"user\",\n    \"password\" : \"123456\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{DOMAIN}}/signup",
+					"host": [
+						"{{DOMAIN}}"
+					],
+					"path": [
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "signin",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\" : \"pratik@gmail.com\",\n    \"password\" : \"123456\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{DOMAIN}}/signin",
+					"host": [
+						"{{DOMAIN}}"
+					],
+					"path": [
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{DOMAIN}}/signout",
+					"host": [
+						"{{DOMAIN}}"
+					],
+					"path": [
+						"signout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://leetcode.com/graphql?username=pratik9333",
+					"protocol": "https",
+					"host": [
+						"leetcode",
+						"com"
+					],
+					"path": [
+						"graphql"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "pratik9333"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

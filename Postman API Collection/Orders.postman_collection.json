@@ -1,0 +1,145 @@
+{
+	"info": {
+		"_postman_id": "bb6a2701-cd62-4470-9509-e7dad451dd45",
+		"name": "Orders",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "create order",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"address\": {\n      \"fulladdress\": \"dev kutir a wing 103\",\n      \"zipcode\": \"421005\",\n      \"city\": \"mumbai\",\n      \"Country\": \"India\"\n    },\n    \"amount\": 1499,\n    \"product\": [\"62038049deb0ce0a89740258\"],\n    \"paymentId\": \"39382b3833v3g3b\",\n    \"orderId\": \"39393993n3\",\n    \"recharge\": \"6202baee4eb5d40b0e8fce3c\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{DOMAIN}}/order/create/6204cf7b9332670a9cd555d5",
+					"host": [
+						"{{DOMAIN}}"
+					],
+					"path": [
+						"order",
+						"create",
+						"6204cf7b9332670a9cd555d5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all user orders",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userid\": \"621144b5ac3117132a4d023e\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{DOMAIN}}/orders/all/620cda8c9077900016b09feb",
+					"host": [
+						"{{DOMAIN}}"
+					],
+					"path": [
+						"orders",
+						"all",
+						"620cda8c9077900016b09feb"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update order status",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"status\": \"Delivered\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{DOMAIN}}/order/622aefdabbea510009394b83/status/62189b476deafc1045269c05",
+					"host": [
+						"{{DOMAIN}}"
+					],
+					"path": [
+						"order",
+						"622aefdabbea510009394b83",
+						"status",
+						"62189b476deafc1045269c05"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get Specific user orders",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{DOMAIN}}/orders/6213d9d1ccba1e3725c4632d",
+					"host": [
+						"{{DOMAIN}}"
+					],
+					"path": [
+						"orders",
+						"6213d9d1ccba1e3725c4632d"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MjE4OWI0NzZkZWFmYzEwNDUyNjljMDUiLCJpYXQiOjE2NDY5MzM5OTV9.LOApPG0mdBFbAwM2q8ah9IMr4XYGc_i9OvrMjI-F7Is",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

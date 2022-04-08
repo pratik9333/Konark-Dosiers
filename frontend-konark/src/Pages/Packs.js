@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Fragment } from "react";
 import { useAlert } from "react-alert";
 import { isAuthenticated } from "../api/Auth";
@@ -6,6 +6,7 @@ import { payment } from "../api/Order";
 import { setNewPack } from "../api/Recharge";
 import axios from "axios";
 import API from "../backend";
+import { AppContext } from "../Context/AppContext";
 
 const Packs = (props) => {
   const [receivedPacks, setReceivedPacks] = useState([]);
@@ -13,6 +14,7 @@ const Packs = (props) => {
   let alert = useAlert();
 
   const { user, token } = isAuthenticated();
+  const { state } = useContext(AppContext);
 
   useEffect(() => {
     console.log(props.location.state);
@@ -35,7 +37,7 @@ const Packs = (props) => {
   }
 
   async function displayRazorpay(packprice, packid) {
-    if (user.activePack && user.activePack.expiresAt !== null) {
+    if (state.user.activePack && state.user.activePack.expiresAt !== null) {
       return alert.error("Your current pack is still active");
     }
     try {
