@@ -30,7 +30,6 @@ const packRemainder = async (user) => {
     Konark Dossiers</p>`;
       sendMail(user.email, mailBody, subject);
     });
-    console.log(j);
     await expirePack(user, rechargePack, expiryDate);
   } catch (error) {
     console.log(error);
