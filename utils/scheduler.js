@@ -48,7 +48,6 @@ const expirePack = async (user) => {
 
   const j = schedule.scheduleJob(date, async () => {
     user.activePack.expiresAt = null;
-    console.log(21);
     await user.save();
   });
 

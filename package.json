@@ -4,8 +4,8 @@
   "description": "Backend Konark",
   "main": "app.js",
   "scripts": {
-    "dev": "nodemon app.js",
-    "start": "node app.js"
+    "dev": "nodemon server.js",
+    "start": "node server.js"
   },
   "author": "Pratik",
   "license": "ISC",
