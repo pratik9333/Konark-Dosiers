@@ -62,18 +62,12 @@ email - pratik@gmail.com
 pass - 123456
 
 ## 📸 Screenshots
-
-|                                                                                                                        |     |
-| :--------------------------------------------------------------------------------------------------------------------: | :-: |
-| ![Imgur](https://res.cloudinary.com/dqdnwfv3r/image/upload/v1676572500/Screenshot_2023-02-10_at_5.11.59_PM_gccf5b.png) |
-| ![Imgur](https://res.cloudinary.com/dqdnwfv3r/image/upload/v1676572500/Screenshot_2023-02-10_at_5.08.36_PM_pohci4.png) |
-| ![Imgur](https://res.cloudinary.com/dqdnwfv3r/image/upload/v1676572500/Screenshot_2023-02-10_at_5.08.09_PM_vfhxfh.png) |
-| ![Imgur](https://res.cloudinary.com/dqdnwfv3r/image/upload/v1676572500/Screenshot_2023-02-10_at_5.08.49_PM_vftmwj.png) |
-
-| ![Imgur](https://res.cloudinary.com/dqdnwfv3r/image/upload/v1676572500/Screenshot_2023-02-10_at_5.08.24_PM_fjgcfi.png) | ![Imgur](https://res.cloudinary.com/dqdnwfv3r/image/upload/v1676572500/Screenshot_2023-02-10_at_5.08.36_PM_pohci4.png)
+|||
+|:----------------------------------------:|:-----------------------------------------:|
+| ![Imgur](https://res.cloudinary.com/dqdnwfv3r/image/upload/v1676572500/Screenshot_2023-02-10_at_5.11.59_PM_gccf5b.png) | ![Imgur](https://res.cloudinary.com/dqdnwfv3r/image/upload/v1676572500/Screenshot_2023-02-10_at_5.08.36_PM_pohci4.png) | | ![Imgur](https://res.cloudinary.com/dqdnwfv3r/image/upload/v1676572500/Screenshot_2023-02-10_at_5.08.09_PM_vfhxfh.png) | | ![Imgur](https://res.cloudinary.com/dqdnwfv3r/image/upload/v1676572500/Screenshot_2023-02-10_at_5.08.49_PM_vftmwj.png) | | ![Imgur](https://res.cloudinary.com/dqdnwfv3r/image/upload/v1676572500/Screenshot_2023-02-10_at_5.08.24_PM_fjgcfi.png) | ![Imgur](https://res.cloudinary.com/dqdnwfv3r/image/upload/v1676572500/Screenshot_2023-02-10_at_5.08.36_PM_pohci4.png)
 
 ## Usefull Links
 
 - [Deployed website link](https://konark-dossiers.netlify.app/)
 
-- [Deployed api link](https://konark-dosiers.vercel.app/)
+- [Deployed api link](https://konark-dosiers-production.up.railway.app/)
