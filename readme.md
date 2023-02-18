@@ -49,22 +49,32 @@ npm i
 npm run dev
 ```
 
-<h3>Use following credentials to login and test the app<h3>
+<h3>To test apis locally, import api collection from the folder Postman API Collection to your postman workspace</h3>
 
-### To test functionality of buying new connection
+- Refer to this video if need help - https://www.youtube.com/watch?v=M-qHvBhULes&t=1s
 
-email - pratik@gmail.com
-pass - 123456
+- Make sure to include token to protected routes i.e product, that you will get when you sign up or log in
 
-### To test functionality of buying accessories after new connection sets up
+<h3>Use following credentials to login and test the app from main prod website<h3>
 
-email - pratik@gmail.com
-pass - 123456
+To test functionality of buying new connection
+
+- email - harsh@gmail.com
+- pass - 123456
+
+To test functionality of buying accessories after new connection has set up
+
+- email - pratik@gmail.com
+- pass - 123456
 
 ## 📸 Screenshots
-|||
-|:----------------------------------------:|:-----------------------------------------:|
-| ![Imgur](https://res.cloudinary.com/dqdnwfv3r/image/upload/v1676572500/Screenshot_2023-02-10_at_5.11.59_PM_gccf5b.png) | ![Imgur](https://res.cloudinary.com/dqdnwfv3r/image/upload/v1676572500/Screenshot_2023-02-10_at_5.08.36_PM_pohci4.png) | | ![Imgur](https://res.cloudinary.com/dqdnwfv3r/image/upload/v1676572500/Screenshot_2023-02-10_at_5.08.09_PM_vfhxfh.png) | | ![Imgur](https://res.cloudinary.com/dqdnwfv3r/image/upload/v1676572500/Screenshot_2023-02-10_at_5.08.49_PM_vftmwj.png) | | ![Imgur](https://res.cloudinary.com/dqdnwfv3r/image/upload/v1676572500/Screenshot_2023-02-10_at_5.08.24_PM_fjgcfi.png) | ![Imgur](https://res.cloudinary.com/dqdnwfv3r/image/upload/v1676572500/Screenshot_2023-02-10_at_5.08.36_PM_pohci4.png)
+
+![Imgur](https://res.cloudinary.com/dqdnwfv3r/image/upload/v1676572500/Screenshot_2023-02-10_at_5.11.59_PM_gccf5b.png)
+![Imgur](https://res.cloudinary.com/dqdnwfv3r/image/upload/v1676572500/Screenshot_2023-02-10_at_5.08.36_PM_pohci4.png)
+![Imgur](https://res.cloudinary.com/dqdnwfv3r/image/upload/v1676572500/Screenshot_2023-02-10_at_5.08.09_PM_vfhxfh.png)
+![Imgur](https://res.cloudinary.com/dqdnwfv3r/image/upload/v1676572500/Screenshot_2023-02-10_at_5.08.49_PM_vftmwj.png)
+![Imgur](https://res.cloudinary.com/dqdnwfv3r/image/upload/v1676572500/Screenshot_2023-02-10_at_5.08.24_PM_fjgcfi.png)
+![Imgur](https://res.cloudinary.com/dqdnwfv3r/image/upload/v1676572500/Screenshot_2023-02-10_at_5.08.36_PM_pohci4.png)
 
 ## Usefull Links
 
